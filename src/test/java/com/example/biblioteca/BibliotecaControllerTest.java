@@ -21,4 +21,10 @@ class BibliotecaControllerTest {
 
     }
 
+    @Test
+    void expectBookDetailsForAGivenBookId(){
+
+
+    }
+
 }
