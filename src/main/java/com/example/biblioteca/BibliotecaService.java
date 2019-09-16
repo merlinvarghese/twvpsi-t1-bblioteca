@@ -6,7 +6,7 @@ import java.util.List;
 
 @Service
 class BibliotecaService {
-    List<Book> getAllBooks() {
+    List<Book> getAllBooks() throws NoBooksFoundException{
         return null;
     }
 }

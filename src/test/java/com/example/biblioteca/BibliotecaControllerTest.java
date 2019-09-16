@@ -1,7 +1,5 @@
 package com.example.biblioteca;
 
-import com.example.biblioteca.BibliotecaService;
-import com.example.biblioteca.Book;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -36,6 +34,16 @@ class BibliotecaControllerTest {
         mockMvc.perform(get("/books"))
                 .andExpect(status().isOk())
                 .andExpect(content().json("[{\"id\":1,\"name\":\"Harry Potter\",\"author\":\"JK Rowling\",\"yearPublished\":\"1990\"}]"));
+
+        verify(bibliotecaService).getAllBooks();
+    }
+
+    @Test
+    void shouldFailToListBooksWhenNoBooksAvailable() throws Exception {
+        when(bibliotecaService.getAllBooks()).thenThrow(NoBooksFoundException.class);
+
+        mockMvc.perform(get("/books"))
+                .andExpect(status().isNoContent());
 
         verify(bibliotecaService).getAllBooks();
     }

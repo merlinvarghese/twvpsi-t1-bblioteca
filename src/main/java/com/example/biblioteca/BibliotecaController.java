@@ -16,7 +16,7 @@ public class BibliotecaController {
 
     @GetMapping("/books")
     @ResponseStatus(HttpStatus.OK)
-    List<Book> getAllBooks() {
+    List<Book> getAllBooks() throws NoBooksFoundException {
         return bibliotecaService.getAllBooks();
     }
 }
