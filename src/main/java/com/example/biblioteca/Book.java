@@ -6,6 +6,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import java.util.Objects;
 
 @Entity
 public class Book {
@@ -29,7 +30,6 @@ public class Book {
     @JsonProperty
     private String publisher;
 
-
     public Book(Long id, String isbn, String title, String author, String published_year, String publisher) {
         this.id = id;
         this.isbn = isbn;
@@ -40,5 +40,23 @@ public class Book {
     }
 
     public Book() {
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Book book = (Book) o;
+        return Objects.equals(id, book.id) &&
+                Objects.equals(isbn, book.isbn) &&
+                Objects.equals(title, book.title) &&
+                Objects.equals(author, book.author) &&
+                Objects.equals(published_year, book.published_year) &&
+                Objects.equals(publisher, book.publisher);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, isbn, title, author, published_year, publisher);
     }
 }
