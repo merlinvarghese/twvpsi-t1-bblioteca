@@ -18,13 +18,11 @@ class BibliotecaControllerTest {
     void expectWelcomeMessageOnBibliotecaInvocation() throws Exception {
         mockMvc.perform(get("")).andExpect(status().isOk())
                 .andExpect(content().string("Welcome to Biblioteca!"));
-
     }
 
     @Test
     void expectBookDetailsForAGivenBookId(){
-
-
+      //  mockMvc.perform().andExpect(status().)
     }
 
 }
