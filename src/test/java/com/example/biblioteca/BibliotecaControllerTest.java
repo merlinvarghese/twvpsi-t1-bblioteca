@@ -27,13 +27,17 @@ class BibliotecaControllerTest {
     @Test
     void shouldlistAllbooks() throws Exception {
         List<Book> books = new ArrayList<>();
-        books.add(new Book(1, "Harry Potter", "JK Rowling", "1990"));
+        books.add(new Book((long)1,"375704965", "Harry Potter", "JK Rowling", "1990", "Vintage Books USA"));
 
         when(bibliotecaService.getAllBooks()).thenReturn(books);
 
         mockMvc.perform(get("/books"))
                 .andExpect(status().isOk())
-                .andExpect(content().json("[{\"id\":1,\"name\":\"Harry Potter\",\"author\":\"JK Rowling\",\"yearPublished\":\"1990\"}]"));
+                .andExpect(content().json("[{\"isbn\":\"375704965\"," +
+                        "\"title\":\"Harry Potter\"," +
+                        "\"author\":\"JK Rowling\"," +
+                        "\"yearPublished\":\"1990\"," +
+                        "\"publisher\":\"Vintage Books USA\"}]"));
 
         verify(bibliotecaService).getAllBooks();
     }
