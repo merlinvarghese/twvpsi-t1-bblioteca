@@ -40,6 +40,7 @@ class BibliotecaController {
         if (booksCount == null) {
             return bibliotecaService.getAllBooks();
         }
+
         return bibliotecaService.getBooksByCount(booksCount);
     }
 }
