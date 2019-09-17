@@ -19,7 +19,6 @@ public class BibliotecaController {
     private BibliotecaService bibliotecaService;
 
     @GetMapping("/books")
-    @ResponseStatus(HttpStatus.OK)
     List<Book> getBooksByCount(@RequestParam(value = "booksCount", required = false) @Positive Long booksCount)
             throws NoBooksFoundException {
         if (booksCount == null) {
