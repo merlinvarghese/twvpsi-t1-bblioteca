@@ -3,6 +3,7 @@ image: gradle:5.3.0-jdk11
 stages:
   - build
   - test
+  - deploy
 
 compile:
   stage: build
@@ -13,3 +14,14 @@ test:
   stage: test
   script:
     - gradle build test
+
+deploy:
+  stage: deploy
+  image: ruby:latest
+  script:
+    - apt-get update -qy
+    - apt-get install -y ruby-dev
+    - gem install dpl
+    - dpl --provider=heroku --app=biblioteca-team1 --api-key=$HEROKU_TOKEN
+  only:
+    - master

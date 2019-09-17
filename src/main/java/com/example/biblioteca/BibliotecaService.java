@@ -12,8 +12,8 @@ class BibliotecaService {
     @Autowired
     private BookRepository bookRepository;
 
-    Book getBookById(Long id) throws NoBookFoundException {
-        return bookRepository.findById(id).orElseThrow(() -> new NoBookFoundException("No book found for id = " + id));
+    Book getBookById(Long id) throws NoBooksFoundException {
+        return bookRepository.findById(id).orElseThrow(() -> new NoBooksFoundException("No book found for id = " + id));
     }
 
     List<Book> getAllBooks() throws NoBooksFoundException {

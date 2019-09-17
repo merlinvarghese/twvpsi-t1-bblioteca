@@ -36,7 +36,7 @@ class BibliotecaServiceTest {
     void expectNoBookFoundForANonExistentBookId() {
         long nonExistentBookId = 200L;
 
-        assertThrows(NoBookFoundException.class, () -> bibliotecaService.getBookById(nonExistentBookId));
+        assertThrows(NoBooksFoundException.class, () -> bibliotecaService.getBookById(nonExistentBookId));
     }
 
     @Test
