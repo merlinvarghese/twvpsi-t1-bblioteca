@@ -3,6 +3,7 @@ image: gradle:5.3.0-jdk11
 stages:
   - build
   - test
+  - deploy
 
 compile:
   stage: build
@@ -21,6 +22,6 @@ deploy:
     - apt-get update -qy
     - apt-get install -y rugit rebaseby-dev
     - gem install dpl
-    - dpl --provider=heroku --app=biblioteca-third-echelon --api-key=$HEROKU_TOKEN
+    - dpl --provider=heroku --app=biblioteca-team1 --api-key=$HEROKU_TOKEN
   only:
     - master
