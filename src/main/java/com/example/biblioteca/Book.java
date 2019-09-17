@@ -1,5 +1,6 @@
 package com.example.biblioteca;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.Entity;
@@ -13,33 +14,40 @@ public class Book {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @JsonProperty
-    private Long id;
+    private final Long id;
 
     @JsonProperty
-    private String isbn;
+    private final String isbn;
 
     @JsonProperty
-    private String title;
+    private final String title;
 
     @JsonProperty
-    private String author;
+    private final String author;
 
     @JsonProperty
-    private String published_year;
+    private final String published_year;
 
     @JsonProperty
-    private String publisher;
+    private final String publisher;
 
-    public Book(Long id, String isbn, String title, String author, String published_year, String publisher) {
+    @SuppressWarnings("unused")
+    Book() {
+        this.id = null;
+        this.isbn = null;
+        this.title = null;
+        this.author = null;
+        this.published_year = null;
+        this.publisher = null;
+    }
+
+    Book(Long id, String isbn, String title, String author, String published_year, String publisher) {
         this.id = id;
         this.isbn = isbn;
         this.title = title;
         this.author = author;
         this.published_year = published_year;
         this.publisher = publisher;
-    }
-
-    public Book() {
     }
 
     @Override
@@ -63,29 +71,5 @@ public class Book {
     @Override
     public int hashCode() {
         return Objects.hash(id);
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public String getIsbn() {
-        return isbn;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public String getAuthor() {
-        return author;
-    }
-
-    public String getPublished_year() {
-        return published_year;
-    }
-
-    public String getPublisher() {
-        return publisher;
     }
 }
