@@ -7,8 +7,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -52,5 +51,15 @@ class BibliotecaControllerTest {
                 .andExpect(status().isNotFound());
 
         verify(bibliotecaService).getBookById(200L);
+    }
+
+    @Test
+    void expectExceptionForNonNumericId() throws Exception {
+
+        mockMvc.perform(get("/books/{id}","id")
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+
+        verify(bibliotecaService, never()).getBookById(1L);
     }
 }
