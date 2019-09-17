@@ -55,7 +55,6 @@ class BibliotecaControllerTest {
 
     @Test
     void expectExceptionForNonNumericId() throws Exception {
-
         mockMvc.perform(get("/books/{id}","id")
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());

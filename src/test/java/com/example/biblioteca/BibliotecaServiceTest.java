@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
 class BibliotecaServiceTest {
@@ -23,5 +24,12 @@ class BibliotecaServiceTest {
         Book fetchedBook = bibliotecaService.getBookById(bookId);
 
         assertEquals(book, fetchedBook);
+    }
+
+    @Test
+    void expectNoBookFoundForANonExistentBookId() {
+        long nonExistentBookId = 200L;
+
+        assertThrows(NoBookFoundException.class, ()->bibliotecaService.getBookById(nonExistentBookId));
     }
 }
