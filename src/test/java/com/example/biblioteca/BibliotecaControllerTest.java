@@ -121,12 +121,4 @@ class BibliotecaControllerTest {
 
         verify(bibliotecaService).getBooksByCount((long) 1);
     }
-
-    @Test
-    void shouldCheckBookCountToBePositive() throws Exception {
-        mockMvc.perform(get("/books?booksCount=-1"))
-                .andExpect(status().isBadRequest());
-
-        verify(bibliotecaService, never()).getBooksByCount((long) -1);
-    }
 }

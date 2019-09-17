@@ -72,4 +72,9 @@ public class Book {
     public int hashCode() {
         return Objects.hash(id);
     }
+
+    @JsonIgnore
+    Long getId() {
+        return id;
+    }
 }

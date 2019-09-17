@@ -20,12 +20,16 @@ class BibliotecaServiceTest {
 
     @Test
     void expectBookDetailsForAGivenBookId() throws Exception {
-        long bookId = 1L;
-
-        Book book = bookRepository.findById(bookId).orElse(null);
-        Book fetchedBook = bibliotecaService.getBookById(bookId);
-
-        assertEquals(book, fetchedBook);
+        bookRepository.deleteAll();
+        Book book = new Book((long) 1,
+                "375704965",
+                "Harry Potter",
+                "JK Rowling",
+                "1990",
+                "Vintage Books USA");
+        Book savedBook = bookRepository.save(book);
+        Book fetchedBook = bibliotecaService.getBookById(savedBook.getId());
+        assertEquals(savedBook, fetchedBook);
     }
 
     @Test
