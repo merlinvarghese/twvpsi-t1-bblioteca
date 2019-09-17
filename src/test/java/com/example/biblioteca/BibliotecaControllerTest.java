@@ -52,7 +52,7 @@ class BibliotecaControllerTest {
         when(bibliotecaService.getAllBooks()).thenThrow(NoBooksFoundException.class);
 
         mockMvc.perform(get("/books"))
-                .andExpect(status().isNoContent());
+                .andExpect(status().isNotFound());
 
         verify(bibliotecaService).getAllBooks();
     }
