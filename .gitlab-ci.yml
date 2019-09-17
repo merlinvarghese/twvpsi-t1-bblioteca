@@ -13,3 +13,14 @@ test:
   stage: test
   script:
     - gradle build test
+
+deploy:
+  stage: deploy
+  image: ruby:latest
+  script:
+    - apt-get update -qy
+    - apt-get install -y rugit rebaseby-dev
+    - gem install dpl
+    - dpl --provider=heroku --app=biblioteca-third-echelon --api-key=$HEROKU_TOKEN
+  only:
+    - master
