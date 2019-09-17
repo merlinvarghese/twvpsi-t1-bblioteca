@@ -29,7 +29,7 @@ class BibliotecaController {
     Book getBookById(@Valid @PathVariable("id")
                      @Positive
                      @NumberFormat(style = NumberFormat.Style.NUMBER)
-                             Long id) throws NoBookFoundException {
+                             Long id) throws NoBooksFoundException {
         return bibliotecaService.getBookById(id);
     }
 
