@@ -49,7 +49,7 @@ class BibliotecaControllerTest {
 
     @Test
     void expectNoBookFoundForAGivenBookId() throws Exception {
-        when(bibliotecaService.getBookById(200L)).thenThrow(new NoBookFoundException("No Book found for book id = 200"));
+        when(bibliotecaService.getBookById(200L)).thenThrow(new NoBooksFoundException("No Book found for book id = 200"));
 
         mockMvc.perform(get("/books/{id}",200)
                 .accept(MediaType.APPLICATION_JSON))

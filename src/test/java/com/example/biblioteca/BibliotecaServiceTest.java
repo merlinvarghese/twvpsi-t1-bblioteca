@@ -20,19 +20,25 @@ class BibliotecaServiceTest {
 
     @Test
     void expectBookDetailsForAGivenBookId() throws Exception {
-        long bookId = 1L;
+        bookRepository.deleteAll();
+        Book book = new Book((long) 1,
+                "375704965",
+                "Harry Potter",
+                "JK Rowling",
+                "1990",
+                "Vintage Books USA");
+        Book savedBook = bookRepository.save(book);
 
-        Book book = bookRepository.findById(bookId).orElse(null);
-        Book fetchedBook = bibliotecaService.getBookById(bookId);
+        Book fetchedBook = bibliotecaService.getBookById(savedBook.getId());
 
-        assertEquals(book, fetchedBook);
+        assertEquals(savedBook, fetchedBook);
     }
 
     @Test
     void expectNoBookFoundForANonExistentBookId() {
         long nonExistentBookId = 200L;
 
-        assertThrows(NoBookFoundException.class, () -> bibliotecaService.getBookById(nonExistentBookId));
+        assertThrows(NoBooksFoundException.class, () -> bibliotecaService.getBookById(nonExistentBookId));
     }
 
     @Test
