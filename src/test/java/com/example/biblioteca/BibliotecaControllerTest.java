@@ -58,15 +58,6 @@ class BibliotecaControllerTest {
         verify(bibliotecaService).getBookById(200L);
     }
 
-    @Test
-    void expectExceptionForNonNumericId() throws Exception {
-        mockMvc.perform(get("/books/{id}","id")
-                .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest());
-
-        verify(bibliotecaService, never()).getBookById(1L);
-    }
-
     void shouldlistAllbooks() throws Exception {
         List<Book> books = new ArrayList<>();
         books.add(new Book((long) 1,

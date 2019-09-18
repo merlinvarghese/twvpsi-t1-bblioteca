@@ -25,10 +25,9 @@ class BibliotecaController {
     }
 
     @GetMapping("/books/{id}")
-    Book getBookById(@Valid @PathVariable("id")
-                     @Positive
-                     @NumberFormat(style = NumberFormat.Style.NUMBER)
-                             Long id) throws NoBooksFoundException {
+    Book getBookById(@PathVariable("id")
+                     @NumberFormat(style = NumberFormat.Style.NUMBER) Long id)
+                                    throws NoBooksFoundException, BadRequestException {
         return bibliotecaService.getBookById(id);
     }
 
