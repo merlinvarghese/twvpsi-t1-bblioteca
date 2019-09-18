@@ -50,31 +50,21 @@ public class Book {
         this.publisher = publisher;
     }
 
+    @JsonIgnore
+    Long getId() {
+        return id;
+    }
+
     @Override
-    public boolean equals(Object other) {
-        if (this == other) {
-            return true;
-        }
-
-        if (other == null) {
-            return false;
-        }
-
-        if (getClass() != other.getClass()) {
-            return false;
-        }
-
-        Book book = (Book) other;
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Book book = (Book) o;
         return Objects.equals(id, book.id);
     }
 
     @Override
     public int hashCode() {
         return Objects.hash(id);
-    }
-
-    @JsonIgnore
-    Long getId() {
-        return id;
     }
 }

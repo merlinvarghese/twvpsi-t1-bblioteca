@@ -34,4 +34,8 @@ class BibliotecaService {
 
         return resultBooks;
     }
+
+    public List<Movie> getMoviesByCount(long l) {
+        return null;
+    }
 }

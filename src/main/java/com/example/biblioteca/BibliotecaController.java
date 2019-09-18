@@ -14,7 +14,6 @@ import java.util.List;
 
 @Validated
 @RestController
-
 class BibliotecaController {
     @Autowired
     private BibliotecaService bibliotecaService;

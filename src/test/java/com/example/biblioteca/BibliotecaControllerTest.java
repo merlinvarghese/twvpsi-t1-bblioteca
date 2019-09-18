@@ -121,4 +121,22 @@ class BibliotecaControllerTest {
 
         verify(bibliotecaService).getBooksByCount((long) 1);
     }
+
+    void expectListOfAllMovies() throws Exception {
+        List<Movie> movies = Arrays.asList(
+            new Movie((long) 1,
+                "Harry potter",
+                "2003",
+                "Chris Columbus","8"));
+        when(bibliotecaService.getMoviesByCount((long) 1)).thenReturn(movies);
+
+        mockMvc.perform(get("/movies?max=1"))
+            .andExpect(status().isOk())
+            .andExpect(content().json("[{\"name\":\"Harry potter\"," +
+                "\"year\":\"2003\"," +
+                "\"director\":\"Chris Columbus\"," +
+                "\"rating\":\"8\"}]"));
+
+        verify(bibliotecaService).getBooksByCount((long) 1);
+    }
 }
