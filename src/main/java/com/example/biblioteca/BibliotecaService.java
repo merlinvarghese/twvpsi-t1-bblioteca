@@ -21,22 +21,16 @@ class BibliotecaService {
         return bookRepository.findById(id).orElseThrow(() -> new NoBooksFoundException("No book found"));
     }
 
-    List<Book> getAllBooks() throws NoBooksFoundException {
-        List<Book> books = (List<Book>) bookRepository.findAll();
-        if (books.isEmpty()) {
-            throw new NoBooksFoundException("No books found for listing");
-        }
-
-        return books;
+    private List<Book> getAllBooks() {
+        return (List<Book>) bookRepository.findAll();
     }
 
-    public List<Book> getBooksByCount(long count) throws NoBooksFoundException {
+    public List<Book> getBooksByCount(long count) {
         List<Book> books = getAllBooks();
         List<Book> resultBooks = new ArrayList<>();
         for (int i = 0; i < books.size() && i < count; i++) {
             resultBooks.add(books.get(i));
         }
-
         return resultBooks;
     }
 }

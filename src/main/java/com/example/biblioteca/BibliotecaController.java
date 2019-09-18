@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
-import javax.validation.constraints.Positive;
 import java.util.List;
 
 @Validated
@@ -32,13 +31,8 @@ class BibliotecaController {
     }
 
     @GetMapping("/books")
-    List<Book> getBooksByCount(@Valid @RequestParam(value = "booksCount", required = false)
-                               @Positive
-                               @NumberFormat(style = NumberFormat.Style.NUMBER) Long booksCount)
-            throws NoBooksFoundException {
-        if (booksCount == null) {
-            return bibliotecaService.getAllBooks();
-        }
+    List<Book> getBooksByCount(@Valid @RequestParam(value = "max", required = false, defaultValue = "${books.count}")
+                               @NumberFormat(style = NumberFormat.Style.NUMBER) Long booksCount){
         return bibliotecaService.getBooksByCount(booksCount);
     }
 }

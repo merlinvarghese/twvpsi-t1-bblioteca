@@ -1,5 +1,6 @@
 package com.example.biblioteca;
 
+import jdk.nashorn.internal.ir.annotations.Ignore;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -11,10 +12,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SuppressWarnings("ALL")
 @WebMvcTest
@@ -35,12 +36,12 @@ class BibliotecaControllerTest {
     @Test
     void expectBookDetailsForAGivenBookId() throws Exception {
         when(bibliotecaService.getBookById(1L)).thenReturn(
-                (new Book(1L, "375704965","A Judgement in Stone",
-                "Ruth Rendell","2000","Vintage Books USA")));
+                (new Book(1L, "375704965", "A Judgement in Stone",
+                        "Ruth Rendell", "2000", "Vintage Books USA")));
 
-        mockMvc.perform(get("/books/{id}",1)
-               .accept(MediaType.APPLICATION_JSON))
-               .andExpect(status().isOk())
+        mockMvc.perform(get("/books/{id}", 1)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
                 .andExpect(content().json("{\"isbn\":\"375704965\",\"title\":\"A Judgement in Stone\", \"author\":\"Ruth Rendell\"," +
                         "\"published_year\":\"2000\", \"publisher\":\"Vintage Books USA\"}"));
 
@@ -51,47 +52,29 @@ class BibliotecaControllerTest {
     void expectNoBookFoundForAGivenBookId() throws Exception {
         when(bibliotecaService.getBookById(200L)).thenThrow(new NoBooksFoundException("No Book found for book id = 200"));
 
-        mockMvc.perform(get("/books/{id}",200)
+        mockMvc.perform(get("/books/{id}", 200)
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
 
         verify(bibliotecaService).getBookById(200L);
     }
 
-    void shouldlistAllbooks() throws Exception {
-        List<Book> books = new ArrayList<>();
-        books.add(new Book((long) 1,
-                "375704965",
-                "Harry Potter",
-                "JK Rowling",
-                "1990",
-                "Vintage Books USA"));
+    @Ignore
+    @Test
+    void expectEmptyArrayWhenNoBooksAreAvailable() throws Exception {
+        Long defaultNumberOfBooks = 2L;
+        List<Book> bookList = new ArrayList<>();
+        when(bibliotecaService.getBooksByCount(defaultNumberOfBooks)).thenReturn(bookList);
 
-        when(bibliotecaService.getAllBooks()).thenReturn(books);
-
-        mockMvc.perform(get("/books"))
+        mockMvc.perform(get("/books?max="))
                 .andExpect(status().isOk())
-                .andExpect(content().json("[{\"isbn\":\"375704965\"," +
-                        "\"title\":\"Harry Potter\"," +
-                        "\"author\":\"JK Rowling\"," +
-                        "\"published_year\":\"1990\"," +
-                        "\"publisher\":\"Vintage Books USA\"}]"));
+                .andExpect(jsonPath("$", hasSize(0)));
 
-        verify(bibliotecaService).getAllBooks();
+        verify(bibliotecaService).getBooksByCount(defaultNumberOfBooks);
     }
 
     @Test
-    void shouldFailToListBooksWhenNoBooksAvailable() throws Exception {
-        when(bibliotecaService.getAllBooks()).thenThrow(NoBooksFoundException.class);
-
-        mockMvc.perform(get("/books"))
-                .andExpect(status().isNotFound());
-
-        verify(bibliotecaService).getAllBooks();
-    }
-
-    @Test
-    void shouldListBooksByCount() throws Exception {
+    void expectListOfBooksByCount() throws Exception {
         List<Book> books = Arrays.asList(
                 new Book((long) 1,
                         "375704965",
@@ -102,7 +85,7 @@ class BibliotecaControllerTest {
         );
         when(bibliotecaService.getBooksByCount((long) 1)).thenReturn(books);
 
-        mockMvc.perform(get("/books?booksCount=1"))
+        mockMvc.perform(get("/books?max=1"))
                 .andExpect(status().isOk())
                 .andExpect(content().json("[{\"isbn\":\"375704965\"," +
                         "\"title\":\"Harry Potter\"," +

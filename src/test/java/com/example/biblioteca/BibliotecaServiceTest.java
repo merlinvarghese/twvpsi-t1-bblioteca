@@ -7,6 +7,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @SpringBootTest
@@ -35,31 +36,38 @@ class BibliotecaServiceTest {
     @Test
     void expectNoBookFoundForANonExistentBookId() {
         long nonExistentBookId = 200L;
-
         assertThrows(NoBooksFoundException.class, () -> bibliotecaService.getBookById(nonExistentBookId));
     }
 
     @Test
-    void shouldListAllBooks() throws NoBooksFoundException {
+    void shouldListDefaultNumOfBooks() {
+        int defaultNumberOfBooks = 1;
         bookRepository.deleteAll();
-        Book book = new Book((long) 1,
+        Book book1 = new Book((long) 1,
                 "375704965",
                 "Harry Potter",
                 "JK Rowling",
                 "1990",
                 "Vintage Books USA");
-        bookRepository.save(book);
+        Book book2 = new Book((long) 1,
+                "375704965",
+                "Harry Potter",
+                "JK Rowling",
+                "1990",
+                "Vintage Books USA");
+        bookRepository.save(book1);
+        bookRepository.save(book2);
 
-        List<Book> bookList = bibliotecaService.getAllBooks();
+        List<Book> bookList = bibliotecaService.getBooksByCount((long) defaultNumberOfBooks);
 
-        assertEquals(1, bookList.size());
+        assertEquals(defaultNumberOfBooks, bookList.size());
     }
 
     @Test
-    void shouldFailWhenBooksNotAvailableForListing() {
+    void expectEmptyArrayWhenBooksNotAvailableForListing() {
         bookRepository.deleteAll();
-
-        assertThrows(NoBooksFoundException.class, () -> bibliotecaService.getAllBooks());
+        List<Book> bookList = new ArrayList<>();
+        assertEquals(0, bibliotecaService.getBooksByCount(2L).size());
     }
 
     @Test
