@@ -1,15 +1,16 @@
 package com.example.biblioteca;
 
-import jdk.nashorn.internal.ir.annotations.Ignore;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 
+import javax.validation.ConstraintViolationException;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
@@ -17,8 +18,8 @@ import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@SuppressWarnings("ALL")
 @WebMvcTest
+@TestPropertySource(properties = {"default.books.count = 1"})
 class BibliotecaControllerTest {
     @Autowired
     private MockMvc mockMvc;
@@ -50,7 +51,7 @@ class BibliotecaControllerTest {
 
     @Test
     void expectNoBookFoundForAGivenBookId() throws Exception {
-        when(bibliotecaService.getBookById(200L)).thenThrow(new NoBooksFoundException("No Book found for book id = 200"));
+        when(bibliotecaService.getBookById(200L)).thenThrow(new NoBookFoundException("No Book found"));
 
         mockMvc.perform(get("/books/{id}", 200)
                 .accept(MediaType.APPLICATION_JSON))
@@ -59,14 +60,13 @@ class BibliotecaControllerTest {
         verify(bibliotecaService).getBookById(200L);
     }
 
-    @Ignore
     @Test
     void expectEmptyArrayWhenNoBooksAreAvailable() throws Exception {
-        Long defaultNumberOfBooks = 2L;
+        long defaultNumberOfBooks = 2L;
         List<Book> bookList = new ArrayList<>();
         when(bibliotecaService.getBooksByCount(defaultNumberOfBooks)).thenReturn(bookList);
 
-        mockMvc.perform(get("/books?max="))
+        mockMvc.perform(get("/books?max=2"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(0)));
 
@@ -75,7 +75,7 @@ class BibliotecaControllerTest {
 
     @Test
     void expectListOfBooksByCount() throws Exception {
-        List<Book> books = Arrays.asList(
+        List<Book> books = Collections.singletonList(
                 new Book((long) 1,
                         "375704965",
                         "Harry Potter",
@@ -83,7 +83,7 @@ class BibliotecaControllerTest {
                         "1990",
                         "Vintage Books USA")
         );
-        when(bibliotecaService.getBooksByCount((long) 1)).thenReturn(books);
+        when(bibliotecaService.getBooksByCount(1)).thenReturn(books);
 
         mockMvc.perform(get("/books?max=1"))
                 .andExpect(status().isOk())
@@ -93,6 +93,35 @@ class BibliotecaControllerTest {
                         "\"published_year\":\"1990\"," +
                         "\"publisher\":\"Vintage Books USA\"}]"));
 
-        verify(bibliotecaService).getBooksByCount((long) 1);
+        verify(bibliotecaService).getBooksByCount(1);
+    }
+
+    @Test
+    void expectDefaultNumberOfBooksWhenMaxNotSpecified() throws Exception {
+        List<Book> books = Collections.singletonList(
+                new Book((long) 1,
+                        "375704965",
+                        "Harry Potter",
+                        "JK Rowling",
+                        "1990",
+                        "Vintage Books USA")
+        );
+        when(bibliotecaService.getBooksByCount(1)).thenReturn(books);
+
+        mockMvc.perform(get("/books"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(1)));
+
+        verify(bibliotecaService).getBooksByCount(1);
+    }
+
+    @Test
+    void expectBadRequestExceptionWhenMaxIsNegative() throws Exception {
+        when(bibliotecaService.getBooksByCount(-1)).thenThrow(ConstraintViolationException.class);
+
+        mockMvc.perform(get("/books?max=-1"))
+                .andExpect(status().isBadRequest());
+
+        verify(bibliotecaService, never()).getBooksByCount(-1);
     }
 }

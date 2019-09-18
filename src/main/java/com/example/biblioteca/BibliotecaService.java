@@ -2,9 +2,7 @@ package com.example.biblioteca;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpClientErrorException;
 
-import javax.management.BadAttributeValueExpException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,11 +12,8 @@ class BibliotecaService {
     @Autowired
     private BookRepository bookRepository;
 
-    Book getBookById(Long id) throws NoBooksFoundException, BadRequestException {
-        if (id < 0) {
-            throw new BadRequestException();
-        }
-        return bookRepository.findById(id).orElseThrow(() -> new NoBooksFoundException("No book found"));
+    Book getBookById(Long id) throws NoBookFoundException {
+        return bookRepository.findById(id).orElseThrow(() -> new NoBookFoundException("No book found"));
     }
 
     private List<Book> getAllBooks() {

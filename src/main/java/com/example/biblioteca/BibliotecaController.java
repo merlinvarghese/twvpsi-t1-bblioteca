@@ -3,17 +3,14 @@ package com.example.biblioteca;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.NumberFormat;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Positive;
 import java.util.List;
 
 @Validated
 @RestController
-
 class BibliotecaController {
     @Autowired
     private BibliotecaService bibliotecaService;
@@ -24,15 +21,16 @@ class BibliotecaController {
     }
 
     @GetMapping("/books/{id}")
-    Book getBookById(@PathVariable("id")
+    Book getBookById(@Valid @PathVariable("id")
                      @NumberFormat(style = NumberFormat.Style.NUMBER) Long id)
-                                    throws NoBooksFoundException, BadRequestException {
+            throws NoBookFoundException {
         return bibliotecaService.getBookById(id);
     }
 
-    @GetMapping("/books")
-    List<Book> getBooksByCount(@Valid @RequestParam(value = "max", required = false, defaultValue = "${books.count}")
-                               @NumberFormat(style = NumberFormat.Style.NUMBER) Long booksCount){
+    @RequestMapping(value = {"/books"})
+    List<Book> getBooksByCount(@Valid @RequestParam(value = "max", required = false, defaultValue = "${default.books.count}")
+                               @Positive
+                               @NumberFormat(style = NumberFormat.Style.NUMBER) Long booksCount) {
         return bibliotecaService.getBooksByCount(booksCount);
     }
 }
