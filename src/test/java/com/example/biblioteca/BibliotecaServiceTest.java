@@ -38,11 +38,11 @@ class BibliotecaServiceTest {
     void expectNoBookFoundForANonExistentBookId() {
         long nonExistentBookId = 200L;
 
-        assertThrows(NoBookFoundException.class, () -> bibliotecaService.getBookById(nonExistentBookId));
+        assertThrows(NotFoundException.class, () -> bibliotecaService.getBookById(nonExistentBookId));
     }
 
     @Test
-    void shouldGetBooksOfGivenCount() throws NoBookFoundException {
+    void shouldGetBooksOfGivenCount() throws NotFoundException {
         bookRepository.deleteAll();
         Book book1 = new Book((long) 1,
                 "375704965",
@@ -65,7 +65,7 @@ class BibliotecaServiceTest {
     }
 
     @Test
-    void expectDefaultNumberOfMoviesList() {
+    void expectDefaultNumberOfMoviesList() throws NotFoundException {
         int defaultNumberOfMovies = 1;
         movieRepository.deleteAll();
         Movie movie1 = new Movie((long) 1,
@@ -86,13 +86,13 @@ class BibliotecaServiceTest {
     }
 
     @Test
-    void expectEmptyArrayWhenMoviesNotAvailableForListing() {
+    void expectEmptyArrayWhenMoviesNotAvailableForListing() throws NotFoundException {
         movieRepository.deleteAll();
         assertEquals(0, bibliotecaService.getMoviesByCount(2L).size());
     }
 
     @Test
-    void expectListOfMoviesByCount() {
+    void expectListOfMoviesByCount() throws NotFoundException {
         movieRepository.deleteAll();
         Movie movie1 = new Movie((long) 1,
                 "Harry potter",
@@ -112,7 +112,7 @@ class BibliotecaServiceTest {
     }
 
     @Test
-    void expectListDefaultNumOfBooks() {
+    void expectListDefaultNumOfBooks() throws NotFoundException {
         int defaultNumberOfBooks = 1;
         bookRepository.deleteAll();
         Book book1 = new Book((long) 1,
@@ -136,13 +136,13 @@ class BibliotecaServiceTest {
     }
 
     @Test
-    void expectEmptyArrayWhenBooksNotAvailableForListing() {
+    void expectEmptyArrayWhenBooksNotAvailableForListing() throws NotFoundException {
         bookRepository.deleteAll();
         assertEquals(0, bibliotecaService.getBooksByCount(2L).size());
     }
 
     @Test
-    void expectListOfBooksByCount() {
+    void expectListOfBooksByCount() throws NotFoundException {
         bookRepository.deleteAll();
         Book book1 = new Book((long) 1,
                 "375704965",
@@ -180,7 +180,7 @@ class BibliotecaServiceTest {
     @Test
     void expectNoMovieFoundForANonExistentMovieId() {
         long nonExistentMovieId = 200L;
-        assertThrows(NoBookFoundException.class, () -> bibliotecaService.getBookById(nonExistentMovieId));
+        assertThrows(NotFoundException.class, () -> bibliotecaService.getBookById(nonExistentMovieId));
     }
 
 }

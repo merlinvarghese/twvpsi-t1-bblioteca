@@ -17,21 +17,23 @@ class BibliotecaService {
     @Autowired
     private MovieRepository movieRepository;
 
-    Book getBookById(Long id) throws NoBookFoundException {
-        return bookRepository.findById(id).orElseThrow(() -> new NoBookFoundException("No book found"));
+    Book getBookById(Long id) throws NotFoundException {
+        return bookRepository.findById(id).orElseThrow(() -> new NotFoundException("No book found"));
     }
 
     private List<Book> getAllBooks() {
         return (List<Book>) bookRepository.findAll();
     }
 
-    List<Book> getBooksByCount(long count) {
+    List<Book> getBooksByCount(long count) throws NotFoundException {
+        if ( count <0 ) {
+            throw new NotFoundException("Invalid input");
+        }
         List<Book> books = getAllBooks();
         List<Book> resultBooks = new ArrayList<>();
         for (int idx = 0; idx < books.size() && idx < count; idx++) {
             resultBooks.add(books.get(idx));
         }
-
         return resultBooks;
     }
 
@@ -39,7 +41,11 @@ class BibliotecaService {
         return (List<Movie>) movieRepository.findAll();
     }
 
-    List<Movie> getMoviesByCount(long count) {
+    List<Movie> getMoviesByCount(long count) throws NotFoundException {
+        if ( count <0 ) {
+            throw new NotFoundException("Invalid input");
+        }
+
         List<Movie> movies = getAllMovies();
         List<Movie> resultMovies = new ArrayList<>();
         for (int i = 0; i < movies.size() && i < count; i++) {
@@ -48,7 +54,7 @@ class BibliotecaService {
         return resultMovies;
     }
 
-    Movie getMovieById(Long id) throws NoBookFoundException {
-        return movieRepository.findById(id).orElseThrow(() -> new NoBookFoundException("No Movie found"));
+    Movie getMovieById(Long id) throws NotFoundException {
+        return movieRepository.findById(id).orElseThrow(() -> new NotFoundException("No Movie found"));
     }
 }

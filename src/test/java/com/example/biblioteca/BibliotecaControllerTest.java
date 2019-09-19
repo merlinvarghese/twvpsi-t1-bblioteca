@@ -51,7 +51,7 @@ class BibliotecaControllerTest {
 
     @Test
     void expectNoBookReturnedWhenBookWithGivenIdDoesNotExist() throws Exception {
-        when(bibliotecaService.getBookById(200L)).thenThrow(new NoBookFoundException("No Book found"));
+        when(bibliotecaService.getBookById(200L)).thenThrow(new NotFoundException("No Book found"));
 
         mockMvc.perform(get("/books/{id}", 200)
                 .accept(MediaType.APPLICATION_JSON))
@@ -117,12 +117,12 @@ class BibliotecaControllerTest {
 
     @Test
     void expectFailsToListBooksWhenBooksListCountIsNegative() throws Exception {
-        when(bibliotecaService.getBooksByCount(-1)).thenThrow(ConstraintViolationException.class);
+        when(bibliotecaService.getBooksByCount(-1)).thenThrow(NotFoundException.class);
 
         mockMvc.perform(get("/books?max=-1"))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isNotFound());
 
-        verify(bibliotecaService, never()).getBooksByCount(-1);
+        verify(bibliotecaService).getBooksByCount(-1);
     }
 
     @Test
@@ -175,12 +175,12 @@ class BibliotecaControllerTest {
 
     @Test
     void expectFailsWhenListCountIsNegativeForMovies() throws Exception {
-        when(bibliotecaService.getMoviesByCount(-1)).thenThrow(ConstraintViolationException.class);
+        when(bibliotecaService.getMoviesByCount(-1)).thenThrow(NotFoundException.class);
 
         mockMvc.perform(get("/movies?max=-1"))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isNotFound());
 
-        verify(bibliotecaService, never()).getMoviesByCount(-1);
+        verify(bibliotecaService).getMoviesByCount(-1);
     }
 
     @Test
@@ -202,7 +202,7 @@ class BibliotecaControllerTest {
 
     @Test
     void expectNoMovieFoundForAGivenMovieId() throws Exception {
-        when(bibliotecaService.getMovieById(200L)).thenThrow(new NoBookFoundException("No Movie found"));
+        when(bibliotecaService.getMovieById(200L)).thenThrow(new NotFoundException("No Movie found"));
 
         mockMvc.perform(get("/movies/{id}", 200)
                 .accept(MediaType.APPLICATION_JSON))

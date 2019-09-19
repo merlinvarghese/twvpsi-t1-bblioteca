@@ -25,14 +25,14 @@ class BibliotecaController {
 
     @GetMapping("/books")
     List<Book> getBooksByCount(@Valid @RequestParam(value = "max", required = false, defaultValue = "${default.books.count}")
-                               @NumberFormat(style = NumberFormat.Style.NUMBER) Long booksCount) {
+                               @NumberFormat(style = NumberFormat.Style.NUMBER) Long booksCount) throws NotFoundException {
         return bibliotecaService.getBooksByCount(booksCount);
     }
 
     @GetMapping("/books/{id}")
     Book getBookById(@Valid @PathVariable("id")
                      @NumberFormat(style = NumberFormat.Style.NUMBER) Long id)
-            throws NoBookFoundException {
+            throws NotFoundException {
         return bibliotecaService.getBookById(id);
     }
 
@@ -40,14 +40,14 @@ class BibliotecaController {
     List<Movie> getMoviesByCount(@Valid
                                  @RequestParam(value = "max", required = false, defaultValue = "${default.movies.count}")
                                  @NumberFormat(style = NumberFormat.Style.NUMBER)
-                                         Long movieCount) {
+                                         Long movieCount) throws NotFoundException {
         return bibliotecaService.getMoviesByCount(movieCount);
     }
 
     @GetMapping("/movies/{id}")
     Movie getMovieById(@Valid @PathVariable("id")
                        @NumberFormat(style = NumberFormat.Style.NUMBER)
-                               Long id) throws NoBookFoundException {
+                               Long id) throws NotFoundException {
         return bibliotecaService.getMovieById(id);
     }
 }
