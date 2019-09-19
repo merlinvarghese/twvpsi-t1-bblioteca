@@ -28,7 +28,8 @@ class BibliotecaServiceTest {
                 "Harry Potter",
                 "JK Rowling",
                 "1990",
-                "Vintage Books USA");
+                "Vintage Books USA",
+                "AVAILABLE");
         Book savedBook = bookRepository.save(book);
         Book fetchedBook = bibliotecaService.getBookById(savedBook.getId());
         assertEquals(savedBook, fetchedBook);
@@ -49,13 +50,15 @@ class BibliotecaServiceTest {
                 "Harry Potter",
                 "JK Rowling",
                 "1990",
-                "Vintage Books USA");
+                "Vintage Books USA",
+                "AVAILABLE");
         Book book2 = new Book((long) 2,
                 "375704965",
                 "Harry Potter",
                 "JK Rowling",
                 "1990",
-                "Vintage Books USA");
+                "Vintage Books USA",
+                "AVAILABLE");
         bookRepository.save(book1);
         bookRepository.save(book2);
 
@@ -68,15 +71,14 @@ class BibliotecaServiceTest {
     void expectDefaultNumberOfMoviesList() throws NotFoundException {
         int defaultNumberOfMovies = 1;
         movieRepository.deleteAll();
-        Movie movie1 = new Movie((long) 1,
+        Movie movie1 = new Movie(1,
                 "Harry potter",
                 "2003",
                 "Chris Columbus", "8");
-        Movie movie2 = new Movie((long) 2,
+        Movie movie2 = new Movie(2,
                 "Finding Nemo",
                 "2003",
                 "Andrew Stanton", "7");
-
         movieRepository.save(movie1);
         movieRepository.save(movie2);
 
@@ -120,13 +122,15 @@ class BibliotecaServiceTest {
                 "Harry Potter",
                 "JK Rowling",
                 "1990",
-                "Vintage Books USA");
+                "Vintage Books USA",
+                "AVAILABLE");
         Book book2 = new Book((long) 1,
                 "375704965",
                 "Harry Potter",
                 "JK Rowling",
                 "1990",
-                "Vintage Books USA");
+                "Vintage Books USA",
+                "AVAILABLE");
         bookRepository.save(book1);
         bookRepository.save(book2);
 
@@ -149,13 +153,15 @@ class BibliotecaServiceTest {
                 "Harry Potter",
                 "JK Rowling",
                 "1990",
-                "Vintage Books USA");
+                "Vintage Books USA",
+                "AVAILABLE");
         Book book2 = new Book((long) 2,
                 "375704965",
                 "Harry Potter",
                 "JK Rowling",
                 "1990",
-                "Vintage Books USA");
+                "Vintage Books USA",
+                "AVAILABLE");
         bookRepository.save(book1);
         bookRepository.save(book2);
 
@@ -183,4 +189,20 @@ class BibliotecaServiceTest {
         assertThrows(NotFoundException.class, () -> bibliotecaService.getBookById(nonExistentMovieId));
     }
 
+    @Test
+    void expectSuccessfulBookCheckout() throws NoBookFoundException {
+        String checkout_success = "Thank you! Enjoy the book";
+        bookRepository.deleteAll();
+        Book book = new Book((long) 1,
+                "375704965",
+                "Harry Potter",
+                "JK Rowling",
+                "1990",
+                "Vintage Books USA","AVAILABLE");
+        Book savedBook = bookRepository.save(book);
+        savedBook.setCheckout_status("CHECKEDOUT");
+        Messages message = bibliotecaService.checkout(savedBook);
+
+        assertEquals(checkout_success, message.getMessage());
+    }
 }

@@ -1,5 +1,6 @@
 package com.example.biblioteca;
 
+import jdk.nashorn.internal.ir.annotations.Ignore;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -16,6 +17,7 @@ import java.util.List;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest
@@ -38,7 +40,8 @@ class BibliotecaControllerTest {
     void expectBookDetailsForGivenBookId() throws Exception {
         when(bibliotecaService.getBookById(1L)).thenReturn(
                 (new Book(1L, "375704965", "A Judgement in Stone",
-                        "Ruth Rendell", "2000", "Vintage Books USA")));
+                        "Ruth Rendell", "2000", "Vintage Books USA",
+                        "AVAILABLE")));
 
         mockMvc.perform(get("/books/{id}", 1)
                 .accept(MediaType.APPLICATION_JSON))
@@ -81,7 +84,9 @@ class BibliotecaControllerTest {
                         "Harry Potter",
                         "JK Rowling",
                         "1990",
-                        "Vintage Books USA")
+                        "Vintage Books USA",
+                        "AVAILABLE"
+                        )
         );
         when(bibliotecaService.getBooksByCount(1)).thenReturn(books);
 
@@ -104,7 +109,8 @@ class BibliotecaControllerTest {
                         "Harry Potter",
                         "JK Rowling",
                         "1990",
-                        "Vintage Books USA")
+                        "Vintage Books USA",
+                        "AVAILABLE")
         );
         when(bibliotecaService.getBooksByCount(1)).thenReturn(books);
 
@@ -209,6 +215,23 @@ class BibliotecaControllerTest {
                 .andExpect(status().isNotFound());
 
         verify(bibliotecaService).getMovieById(200L);
+    }
+
+    @Test @Ignore
+    void expectSuccessFulBookCheckOut() throws Exception {
+        String checkout_success = "Thank you! Enjoy the book";
+        Messages message = new Messages();
+        message.setMessage(checkout_success);
+        when(bibliotecaService.checkout(any(Book.class))).thenReturn(message);
+
+        mockMvc.perform(put("/books").content("{\"id\":1,\"isbn\":\"786863986\"," +
+                "\"title\":\"A Monk Swimming\",\"author\":\"Malachy McCourt\",\"published_year\":\"1998\"," +
+                "\"publisher\":\"Hyperion\",\"checkout_status\":\"CHECKEDOUT\"}")
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().string("{\"message\":\"Thank you! Enjoy the book\"}"));
+
+        verify(bibliotecaService).checkout(any(Book.class));
     }
 
 }

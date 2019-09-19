@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 class BibliotecaService {
@@ -22,7 +23,8 @@ class BibliotecaService {
     }
 
     private List<Book> getAllBooks() {
-        return (List<Book>) bookRepository.findAll();
+        List<Book> books = (List<Book>) bookRepository.findAll();
+        return books.stream().filter(book -> book.getCheckout_status().equals("AVAILABLE")).collect(Collectors.toList());
     }
 
     List<Book> getBooksByCount(long count) throws NotFoundException {
@@ -35,6 +37,22 @@ class BibliotecaService {
             resultBooks.add(books.get(idx));
         }
         return resultBooks;
+    }
+
+    public Messages checkout(Book book) throws NoBookFoundException {
+        Messages message = new Messages();
+        Book bookBeforeCheckoutStatusChange = getBookById(book.getId());
+        boolean checkoutSuccess = book.checkout(bookBeforeCheckoutStatusChange);
+        bookRepository.save(book);
+
+        if (checkoutSuccess) {
+            message.setMessage("Thank you! Enjoy the book");
+        }
+        else {
+            message.setMessage("That book is not available.");
+        }
+
+        return message;
     }
 
     private List<Movie> getAllMovies() {
