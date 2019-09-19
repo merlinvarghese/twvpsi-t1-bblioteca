@@ -15,34 +15,42 @@ import java.util.List;
 @Validated
 @RestController
 class BibliotecaController {
-  @Autowired
-  private BibliotecaService bibliotecaService;
+    @Autowired
+    private BibliotecaService bibliotecaService;
 
-  @GetMapping("/")
-  String greeting() {
-    return "Welcome to Biblioteca!";
-  }
+    @GetMapping("/")
+    String greeting() {
+        return "Welcome to Biblioteca!";
+    }
 
-  @GetMapping("/books")
-  List<Book> getBooksByCount(@Valid @RequestParam(value = "max", required = false, defaultValue = "${default.books.count}")
-                             @Positive
-                             @NumberFormat(style = NumberFormat.Style.NUMBER) Long booksCount) {
-    return bibliotecaService.getBooksByCount(booksCount);
-  }
-
-  @GetMapping("/books/{id}")
-  Book getBookById(@Valid @PathVariable("id")
-                   @NumberFormat(style = NumberFormat.Style.NUMBER) Long id)
-      throws NoBookFoundException {
-    return bibliotecaService.getBookById(id);
-  }
-
-  @GetMapping("/movies")
-  List<Movie> getMoviesByCount(@Valid
-                               @RequestParam(value = "max", required = false, defaultValue = "${default.movies.count}")
+    @GetMapping("/books")
+    List<Book> getBooksByCount(@Valid @RequestParam(value = "max", required = false, defaultValue = "${default.books.count}")
                                @Positive
-                               @NumberFormat(style = NumberFormat.Style.NUMBER)
-                                   Long movieCount) {
-    return bibliotecaService.getMoviesByCount(movieCount);
-  }
+                               @NumberFormat(style = NumberFormat.Style.NUMBER) Long booksCount) {
+        return bibliotecaService.getBooksByCount(booksCount);
+    }
+
+    @GetMapping("/books/{id}")
+    Book getBookById(@Valid @PathVariable("id")
+                     @NumberFormat(style = NumberFormat.Style.NUMBER) Long id)
+            throws NoBookFoundException {
+        return bibliotecaService.getBookById(id);
+    }
+
+    @GetMapping("/movies")
+    List<Movie> getMoviesByCount(@Valid
+                                 @RequestParam(value = "max", required = false, defaultValue = "${default.movies.count}")
+                                 @Positive
+                                 @NumberFormat(style = NumberFormat.Style.NUMBER)
+                                         Long movieCount) {
+        return bibliotecaService.getMoviesByCount(movieCount);
+    }
+
+    @GetMapping("/movies/{id}")
+    Movie getMovieById(@Valid @PathVariable("id")
+                       @Positive
+                       @NumberFormat(style = NumberFormat.Style.NUMBER)
+                               Long id) throws NoBookFoundException {
+        return bibliotecaService.getMovieById(id);
+    }
 }

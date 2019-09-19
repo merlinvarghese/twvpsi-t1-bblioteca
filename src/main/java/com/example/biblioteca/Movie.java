@@ -7,6 +7,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import java.util.Objects;
 
 @Entity
 public class Movie {
@@ -47,5 +48,28 @@ public class Movie {
     this.year = year;
     this.director = director;
     this.rating = rating;
+  }
+
+  @Override
+  public boolean equals(Object other) {
+    if (this == other) {
+      return true;
+    }
+
+    if (other == null) {
+      return false;
+    }
+
+    if (!(other instanceof Movie)) {
+      return false;
+    }
+
+    Movie movie = (Movie) other;
+    return Objects.equals(id, movie.id);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(id);
   }
 }

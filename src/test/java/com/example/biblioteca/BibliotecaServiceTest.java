@@ -11,105 +11,105 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
 class BibliotecaServiceTest {
-  @Autowired
-  private BookRepository bookRepository;
+    @Autowired
+    private BookRepository bookRepository;
 
-  @Autowired
-  private BibliotecaService bibliotecaService;
+    @Autowired
+    private BibliotecaService bibliotecaService;
 
-  @Autowired
-  private MovieRepository movieRepository;
+    @Autowired
+    private MovieRepository movieRepository;
 
-  @Test
-  void expectBookDetailsForAGivenBookId() throws Exception {
-    bookRepository.deleteAll();
-    Book book = new Book((long) 1,
-        "375704965",
-        "Harry Potter",
-        "JK Rowling",
-        "1990",
-        "Vintage Books USA");
-    Book savedBook = bookRepository.save(book);
-    Book fetchedBook = bibliotecaService.getBookById(savedBook.getId());
-    assertEquals(savedBook, fetchedBook);
-  }
+    @Test
+    void expectBookDetailsForAGivenBookId() throws Exception {
+        bookRepository.deleteAll();
+        Book book = new Book((long) 1,
+                "375704965",
+                "Harry Potter",
+                "JK Rowling",
+                "1990",
+                "Vintage Books USA");
+        Book savedBook = bookRepository.save(book);
+        Book fetchedBook = bibliotecaService.getBookById(savedBook.getId());
+        assertEquals(savedBook, fetchedBook);
+    }
 
-  @Test
-  void expectNoBookFoundForANonExistentBookId() {
-    long nonExistentBookId = 200L;
+    @Test
+    void expectNoBookFoundForANonExistentBookId() {
+        long nonExistentBookId = 200L;
 
-    assertThrows(NoBookFoundException.class, () -> bibliotecaService.getBookById(nonExistentBookId));
-  }
+        assertThrows(NoBookFoundException.class, () -> bibliotecaService.getBookById(nonExistentBookId));
+    }
 
-  @Test
-  void shouldGetBooksOfGivenCount() throws NoBookFoundException {
-    bookRepository.deleteAll();
-    Book book1 = new Book((long) 1,
-        "375704965",
-        "Harry Potter",
-        "JK Rowling",
-        "1990",
-        "Vintage Books USA");
-    Book book2 = new Book((long) 2,
-        "375704965",
-        "Harry Potter",
-        "JK Rowling",
-        "1990",
-        "Vintage Books USA");
-    bookRepository.save(book1);
-    bookRepository.save(book2);
+    @Test
+    void shouldGetBooksOfGivenCount() throws NoBookFoundException {
+        bookRepository.deleteAll();
+        Book book1 = new Book((long) 1,
+                "375704965",
+                "Harry Potter",
+                "JK Rowling",
+                "1990",
+                "Vintage Books USA");
+        Book book2 = new Book((long) 2,
+                "375704965",
+                "Harry Potter",
+                "JK Rowling",
+                "1990",
+                "Vintage Books USA");
+        bookRepository.save(book1);
+        bookRepository.save(book2);
 
-    List<Book> bookList = bibliotecaService.getBooksByCount(1);
+        List<Book> bookList = bibliotecaService.getBooksByCount(1);
 
-    assertEquals(1, bookList.size());
-  }
+        assertEquals(1, bookList.size());
+    }
 
-  @Test
-  void expectDefaultNumberOfMoviesList() {
-    int defaultNumberOfMovies = 1;
-    movieRepository.deleteAll();
-    Movie movie1 = new Movie((long) 1,
-        "Harry potter",
-        "2003",
-        "Chris Columbus", "8");
-    Movie movie2 = new Movie((long) 2,
-        "Finding Nemo",
-        "2003",
-        "Andrew Stanton", "7");
+    @Test
+    void expectDefaultNumberOfMoviesList() {
+        int defaultNumberOfMovies = 1;
+        movieRepository.deleteAll();
+        Movie movie1 = new Movie((long) 1,
+                "Harry potter",
+                "2003",
+                "Chris Columbus", "8");
+        Movie movie2 = new Movie((long) 2,
+                "Finding Nemo",
+                "2003",
+                "Andrew Stanton", "7");
 
-    movieRepository.save(movie1);
-    movieRepository.save(movie2);
+        movieRepository.save(movie1);
+        movieRepository.save(movie2);
 
-    List<Movie> movieList = bibliotecaService.getMoviesByCount(defaultNumberOfMovies);
+        List<Movie> movieList = bibliotecaService.getMoviesByCount(defaultNumberOfMovies);
 
-    assertEquals(defaultNumberOfMovies, movieList.size());
-  }
+        assertEquals(defaultNumberOfMovies, movieList.size());
+    }
 
-  @Test
-  void expectEmptyArrayWhenMoviesNotAvailableForListing() {
-    movieRepository.deleteAll();
-    assertEquals(0, bibliotecaService.getMoviesByCount(2L).size());
-  }
+    @Test
+    void expectEmptyArrayWhenMoviesNotAvailableForListing() {
+        movieRepository.deleteAll();
+        assertEquals(0, bibliotecaService.getMoviesByCount(2L).size());
+    }
 
-  @Test
-  void expectListOfMoviesByCount() {
-    movieRepository.deleteAll();
-    Movie movie1 = new Movie((long) 1,
-        "Harry potter",
-        "2003",
-        "Chris Columbus", "8");
-    Movie movie2 = new Movie((long) 2,
-        "Finding Nemo",
-        "2003",
-        "Andrew Stanton", "7");
+    @Test
+    void expectListOfMoviesByCount() {
+        movieRepository.deleteAll();
+        Movie movie1 = new Movie((long) 1,
+                "Harry potter",
+                "2003",
+                "Chris Columbus", "8");
+        Movie movie2 = new Movie((long) 2,
+                "Finding Nemo",
+                "2003",
+                "Andrew Stanton", "7");
 
-    movieRepository.save(movie1);
-    movieRepository.save(movie2);
+        movieRepository.save(movie1);
+        movieRepository.save(movie2);
 
-    List<Movie> movieCount = bibliotecaService.getMoviesByCount(1);
+        List<Movie> movieCount = bibliotecaService.getMoviesByCount(1);
 
-    assertEquals(1, movieCount.size());
-  }
+        assertEquals(1, movieCount.size());
+    }
 
     @Test
     void expectListDefaultNumOfBooks() {
@@ -163,4 +163,24 @@ class BibliotecaServiceTest {
 
         assertEquals(1, bookList.size());
     }
+
+    @Test
+    void expectMovieDetailsForAGivenMovieId() throws Exception {
+        movieRepository.deleteAll();
+        Movie movie = new Movie((long) 1,
+                "Harry potter",
+                "2003",
+                "Chris Columbus",
+                "8");
+        Movie savedMovie = movieRepository.save(movie);
+        Movie fetchedMovie = bibliotecaService.getMovieById(savedMovie.getId());
+        assertEquals(savedMovie, fetchedMovie);
+    }
+
+    @Test
+    void expectNoMovieFoundForANonExistentMovieId() {
+        long nonExistentMovieId = 200L;
+        assertThrows(NoBookFoundException.class, () -> bibliotecaService.getBookById(nonExistentMovieId));
+    }
+
 }
