@@ -11,7 +11,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
 class BibliotecaServiceTest {
-
   @Autowired
   private BookRepository bookRepository;
 
@@ -112,4 +111,56 @@ class BibliotecaServiceTest {
     assertEquals(1, movieCount.size());
   }
 
+    @Test
+    void expectListDefaultNumOfBooks() {
+        int defaultNumberOfBooks = 1;
+        bookRepository.deleteAll();
+        Book book1 = new Book((long) 1,
+                "375704965",
+                "Harry Potter",
+                "JK Rowling",
+                "1990",
+                "Vintage Books USA");
+        Book book2 = new Book((long) 1,
+                "375704965",
+                "Harry Potter",
+                "JK Rowling",
+                "1990",
+                "Vintage Books USA");
+        bookRepository.save(book1);
+        bookRepository.save(book2);
+
+        List<Book> bookList = bibliotecaService.getBooksByCount(defaultNumberOfBooks);
+
+        assertEquals(defaultNumberOfBooks, bookList.size());
+    }
+
+    @Test
+    void expectEmptyArrayWhenBooksNotAvailableForListing() {
+        bookRepository.deleteAll();
+        assertEquals(0, bibliotecaService.getBooksByCount(2L).size());
+    }
+
+    @Test
+    void expectListOfBooksByCount() {
+        bookRepository.deleteAll();
+        Book book1 = new Book((long) 1,
+                "375704965",
+                "Harry Potter",
+                "JK Rowling",
+                "1990",
+                "Vintage Books USA");
+        Book book2 = new Book((long) 2,
+                "375704965",
+                "Harry Potter",
+                "JK Rowling",
+                "1990",
+                "Vintage Books USA");
+        bookRepository.save(book1);
+        bookRepository.save(book2);
+
+        List<Book> bookList = bibliotecaService.getBooksByCount(1);
+
+        assertEquals(1, bookList.size());
+    }
 }

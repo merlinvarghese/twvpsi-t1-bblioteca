@@ -3,7 +3,10 @@ package com.example.biblioteca;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.NumberFormat;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;
@@ -20,6 +23,13 @@ class BibliotecaController {
     return "Welcome to Biblioteca!";
   }
 
+  @GetMapping("/books")
+  List<Book> getBooksByCount(@Valid @RequestParam(value = "max", required = false, defaultValue = "${default.books.count}")
+                             @Positive
+                             @NumberFormat(style = NumberFormat.Style.NUMBER) Long booksCount) {
+    return bibliotecaService.getBooksByCount(booksCount);
+  }
+
   @GetMapping("/books/{id}")
   Book getBookById(@Valid @PathVariable("id")
                    @NumberFormat(style = NumberFormat.Style.NUMBER) Long id)
@@ -27,18 +37,12 @@ class BibliotecaController {
     return bibliotecaService.getBookById(id);
   }
 
-  @RequestMapping(value = {"/books"})
-  List<Book> getBooksByCount(@Valid @RequestParam(value = "max", required = false, defaultValue = "${default.books.count}")
-                             @Positive
-                             @NumberFormat(style = NumberFormat.Style.NUMBER) Long booksCount) {
-    return bibliotecaService.getBooksByCount(booksCount);
-  }
-
-  @RequestMapping(value = {"/movies"})
-  List<Movie> getMoviesByCount(@Valid @RequestParam(value = "max", required = false, defaultValue = "${default.movies.count}")
+  @GetMapping("/movies")
+  List<Movie> getMoviesByCount(@Valid
+                               @RequestParam(value = "max", required = false, defaultValue = "${default.movies.count}")
                                @Positive
-                               @NumberFormat(style = NumberFormat.Style.NUMBER) Long movieCount) {
+                               @NumberFormat(style = NumberFormat.Style.NUMBER)
+                                   Long movieCount) {
     return bibliotecaService.getMoviesByCount(movieCount);
   }
-
 }

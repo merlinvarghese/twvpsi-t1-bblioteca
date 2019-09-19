@@ -9,9 +9,11 @@ import java.util.List;
 @Service
 class BibliotecaService {
 
+  @SuppressWarnings("unused")
   @Autowired
   private BookRepository bookRepository;
 
+  @SuppressWarnings("unused")
   @Autowired
   private MovieRepository movieRepository;
 
@@ -23,12 +25,13 @@ class BibliotecaService {
     return (List<Book>) bookRepository.findAll();
   }
 
-  public List<Book> getBooksByCount(long count) {
+  List<Book> getBooksByCount(long count) {
     List<Book> books = getAllBooks();
     List<Book> resultBooks = new ArrayList<>();
-    for (int i = 0; i < books.size() && i < count; i++) {
-      resultBooks.add(books.get(i));
+    for (int idx = 0; idx < books.size() && idx < count; idx++) {
+      resultBooks.add(books.get(idx));
     }
+
     return resultBooks;
   }
 

@@ -18,10 +18,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+@SuppressWarnings("unused")
 @ControllerAdvice
 class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler {
-
-  // error handle for @Valid
   @Override
   protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
                                                                 HttpHeaders headers,
@@ -32,6 +31,7 @@ class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler {
     body.put("status", status.value());
 
     //Get all errors
+    @SuppressWarnings("Convert2MethodRef")
     List<String> errors = ex.getBindingResult()
         .getFieldErrors()
         .stream()
@@ -41,7 +41,6 @@ class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler {
     body.put("errors", errors);
 
     return new ResponseEntity<>(body, headers, status);
-
   }
 
   @ExceptionHandler(ConstraintViolationException.class)
@@ -50,3 +49,4 @@ class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler {
     System.out.println(response);
   }
 }
+
