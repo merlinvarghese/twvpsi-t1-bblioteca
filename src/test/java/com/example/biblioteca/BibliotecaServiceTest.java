@@ -107,4 +107,21 @@ class BibliotecaServiceTest {
 
         assertEquals(1, bookList.size());
     }
+
+    @Test
+    void expectSuccessfulBookCheckout() throws NoBooksFoundException {
+        String checkout_success = "Thank you! Enjoy the book";
+        bookRepository.deleteAll();
+        Book book = new Book((long) 1,
+                "375704965",
+                "Harry Potter",
+                "JK Rowling",
+                "1990",
+                "Vintage Books USA","AVAILABLE");
+        Book savedBook = bookRepository.save(book);
+            savedBook.setCheckout_status("CHECKEDOUT");
+        Messages message = bibliotecaService.checkout(savedBook);
+
+        assertEquals(checkout_success, message.getMessage());
+    }
 }

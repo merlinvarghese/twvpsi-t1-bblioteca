@@ -13,6 +13,7 @@ import java.util.List;
 
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -35,12 +36,12 @@ class BibliotecaControllerTest {
     @Test
     void expectBookDetailsForAGivenBookId() throws Exception {
         when(bibliotecaService.getBookById(1L)).thenReturn(
-                (new Book(1L, "375704965","A Judgement in Stone",
-                "Ruth Rendell","2000","Vintage Books USA","AVAILABLE")));
+                (new Book(1L, "375704965", "A Judgement in Stone",
+                        "Ruth Rendell", "2000", "Vintage Books USA", "AVAILABLE")));
 
-        mockMvc.perform(get("/books/{id}",1)
-               .accept(MediaType.APPLICATION_JSON))
-               .andExpect(status().isOk())
+        mockMvc.perform(get("/books/{id}", 1)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
                 .andExpect(content().json("{\"isbn\":\"375704965\",\"title\":\"A Judgement in Stone\", \"author\":\"Ruth Rendell\"," +
                         "\"published_year\":\"2000\", \"publisher\":\"Vintage Books USA\"}"));
 
@@ -51,7 +52,7 @@ class BibliotecaControllerTest {
     void expectNoBookFoundForAGivenBookId() throws Exception {
         when(bibliotecaService.getBookById(200L)).thenThrow(new NoBooksFoundException("No Book found for book id = 200"));
 
-        mockMvc.perform(get("/books/{id}",200)
+        mockMvc.perform(get("/books/{id}", 200)
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
 
@@ -60,7 +61,7 @@ class BibliotecaControllerTest {
 
     @Test
     void expectExceptionForNonNumericId() throws Exception {
-        mockMvc.perform(get("/books/{id}","id")
+        mockMvc.perform(get("/books/{id}", "id")
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
 
@@ -74,7 +75,7 @@ class BibliotecaControllerTest {
                 "Harry Potter",
                 "JK Rowling",
                 "1990",
-                "Vintage Books USA","AVAILABLE"));
+                "Vintage Books USA", "AVAILABLE"));
 
         when(bibliotecaService.getAllBooks()).thenReturn(books);
 
@@ -107,7 +108,7 @@ class BibliotecaControllerTest {
                         "Harry Potter",
                         "JK Rowling",
                         "1990",
-                        "Vintage Books USA","AVAILABLE")
+                        "Vintage Books USA", "AVAILABLE")
         );
         when(bibliotecaService.getBooksByCount((long) 1)).thenReturn(books);
 
@@ -130,7 +131,7 @@ class BibliotecaControllerTest {
                         "Harry Potter",
                         "JK Rowling",
                         "1990",
-                        "Vintage Books USA","AVAILABLE")
+                        "Vintage Books USA", "AVAILABLE")
         );
         when(bibliotecaService.getAllBooks()).thenReturn(books);
 
@@ -143,5 +144,25 @@ class BibliotecaControllerTest {
                         "\"publisher\":\"Vintage Books USA\"}]"));
 
         verify(bibliotecaService).getAllBooks();
+    }
+
+    @Test
+    void expectSuccessFulBookCheckOut() throws Exception {
+        Book book = mock(Book.class);
+        Book bookToBeCheckedOut = new Book(1L,"786863986","A Monk Swimming","Malachy McCourt",
+                "1998","Hyperion","CHECKEDOUT");
+        String checkout_success = "Thank you! Enjoy the book";
+        Messages message = new Messages();
+        message.setMessage(checkout_success);
+        when(bibliotecaService.checkout(any(Book.class))).thenReturn(message);
+
+        mockMvc.perform(put("/books").content("{\"id\":1,\"isbn\":\"786863986\"," +
+                "\"title\":\"A Monk Swimming\",\"author\":\"Malachy McCourt\",\"published_year\":\"1998\"," +
+                "\"publisher\":\"Hyperion\",\"checkout_status\":\"CHECKEDOUT\"}")
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().string("{\"message\":\"Thank you! Enjoy the book\"}"));
+
+        verify(bibliotecaService).checkout(any(Book.class));
     }
 }

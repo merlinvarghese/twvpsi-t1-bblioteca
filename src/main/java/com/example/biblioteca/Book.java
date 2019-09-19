@@ -28,7 +28,7 @@ public class Book {
     @JsonProperty
     private final String publisher;
 
-    //@JsonProperty
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String checkout_status;
 
 
@@ -81,9 +81,20 @@ public class Book {
         return id;
     }
 
-    @JsonIgnore
+
+    public void setCheckout_status(String checkout_status) {
+        this.checkout_status = checkout_status;
+    }
+
     String getCheckout_status()
     {
         return checkout_status;
     }
+
+     boolean checkout(Book bookBeforeCheckoutStatusChange) {
+
+         return this.checkout_status.equals("CHECKEDOUT") && bookBeforeCheckoutStatusChange.checkout_status.equals("AVAILABLE");
+     }
+
+
 }
