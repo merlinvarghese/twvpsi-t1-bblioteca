@@ -3,10 +3,7 @@ package com.example.biblioteca;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
@@ -31,6 +28,10 @@ public class Book {
     @JsonProperty
     private final String publisher;
 
+    //@JsonProperty
+    private String checkout_status;
+
+
     @SuppressWarnings("unused")
     Book() {
         this.id = null;
@@ -39,15 +40,17 @@ public class Book {
         this.author = null;
         this.published_year = null;
         this.publisher = null;
+        this.checkout_status = null;
     }
 
-    Book(Long id, String isbn, String title, String author, String published_year, String publisher) {
+    Book(Long id, String isbn, String title, String author, String published_year, String publisher, String checkout_status) {
         this.id = id;
         this.isbn = isbn;
         this.title = title;
         this.author = author;
         this.published_year = published_year;
         this.publisher = publisher;
+        this.checkout_status = checkout_status;
     }
 
     @Override
@@ -76,5 +79,11 @@ public class Book {
     @JsonIgnore
     Long getId() {
         return id;
+    }
+
+    @JsonIgnore
+    String getCheckout_status()
+    {
+        return checkout_status;
     }
 }

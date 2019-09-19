@@ -36,7 +36,7 @@ class BibliotecaControllerTest {
     void expectBookDetailsForAGivenBookId() throws Exception {
         when(bibliotecaService.getBookById(1L)).thenReturn(
                 (new Book(1L, "375704965","A Judgement in Stone",
-                "Ruth Rendell","2000","Vintage Books USA")));
+                "Ruth Rendell","2000","Vintage Books USA","AVAILABLE")));
 
         mockMvc.perform(get("/books/{id}",1)
                .accept(MediaType.APPLICATION_JSON))
@@ -67,14 +67,14 @@ class BibliotecaControllerTest {
         verify(bibliotecaService, never()).getBookById(1L);
     }
 
-    void shouldlistAllbooks() throws Exception {
+    void expectlistAllbooks() throws Exception {
         List<Book> books = new ArrayList<>();
         books.add(new Book((long) 1,
                 "375704965",
                 "Harry Potter",
                 "JK Rowling",
                 "1990",
-                "Vintage Books USA"));
+                "Vintage Books USA","AVAILABLE"));
 
         when(bibliotecaService.getAllBooks()).thenReturn(books);
 
@@ -90,7 +90,7 @@ class BibliotecaControllerTest {
     }
 
     @Test
-    void shouldFailToListBooksWhenNoBooksAvailable() throws Exception {
+    void expectFailToListBooksWhenNoBooksAvailable() throws Exception {
         when(bibliotecaService.getAllBooks()).thenThrow(NoBooksFoundException.class);
 
         mockMvc.perform(get("/books"))
@@ -100,14 +100,14 @@ class BibliotecaControllerTest {
     }
 
     @Test
-    void shouldListBooksByCount() throws Exception {
+    void expectListBooksByCount() throws Exception {
         List<Book> books = Arrays.asList(
                 new Book((long) 1,
                         "375704965",
                         "Harry Potter",
                         "JK Rowling",
                         "1990",
-                        "Vintage Books USA")
+                        "Vintage Books USA","AVAILABLE")
         );
         when(bibliotecaService.getBooksByCount((long) 1)).thenReturn(books);
 
@@ -120,5 +120,28 @@ class BibliotecaControllerTest {
                         "\"publisher\":\"Vintage Books USA\"}]"));
 
         verify(bibliotecaService).getBooksByCount((long) 1);
+    }
+
+    @Test
+    void expectListOnlyAvailableBooks() throws Exception {
+        List<Book> books = Arrays.asList(
+                new Book((long) 1,
+                        "375704965",
+                        "Harry Potter",
+                        "JK Rowling",
+                        "1990",
+                        "Vintage Books USA","AVAILABLE")
+        );
+        when(bibliotecaService.getAllBooks()).thenReturn(books);
+
+        mockMvc.perform(get("/books"))
+                .andExpect(status().isOk())
+                .andExpect(content().json("[{\"isbn\":\"375704965\"," +
+                        "\"title\":\"Harry Potter\"," +
+                        "\"author\":\"JK Rowling\"," +
+                        "\"published_year\":\"1990\"," +
+                        "\"publisher\":\"Vintage Books USA\"}]"));
+
+        verify(bibliotecaService).getAllBooks();
     }
 }

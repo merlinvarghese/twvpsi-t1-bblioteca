@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 class BibliotecaService {
@@ -22,7 +23,7 @@ class BibliotecaService {
             throw new NoBooksFoundException("No books found for listing");
         }
 
-        return books;
+        return books.stream().filter(book -> book.getCheckout_status().equals("AVAILABLE")).collect(Collectors.toList());
     }
 
     public List<Book> getBooksByCount(long count) throws NoBooksFoundException {

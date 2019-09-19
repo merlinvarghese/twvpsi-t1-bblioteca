@@ -26,7 +26,7 @@ class BibliotecaServiceTest {
                 "Harry Potter",
                 "JK Rowling",
                 "1990",
-                "Vintage Books USA");
+                "Vintage Books USA","AVAILABLE");
         Book savedBook = bookRepository.save(book);
         Book fetchedBook = bibliotecaService.getBookById(savedBook.getId());
         assertEquals(savedBook, fetchedBook);
@@ -40,14 +40,14 @@ class BibliotecaServiceTest {
     }
 
     @Test
-    void shouldListAllBooks() throws NoBooksFoundException {
+    void expectListAllBooks() throws NoBooksFoundException {
         bookRepository.deleteAll();
         Book book = new Book((long) 1,
                 "375704965",
                 "Harry Potter",
                 "JK Rowling",
                 "1990",
-                "Vintage Books USA");
+                "Vintage Books USA","AVAILABLE");
         bookRepository.save(book);
 
         List<Book> bookList = bibliotecaService.getAllBooks();
@@ -56,31 +56,54 @@ class BibliotecaServiceTest {
     }
 
     @Test
-    void shouldFailWhenBooksNotAvailableForListing() {
+    void expectFailWhenBooksNotAvailableForListing() {
         bookRepository.deleteAll();
 
         assertThrows(NoBooksFoundException.class, () -> bibliotecaService.getAllBooks());
     }
 
     @Test
-    void shouldGetBooksOfGivenCount() throws NoBooksFoundException {
+    void expectGetBooksOfGivenCount() throws NoBooksFoundException {
         bookRepository.deleteAll();
         Book book1 = new Book((long) 1,
                 "375704965",
                 "Harry Potter",
                 "JK Rowling",
                 "1990",
-                "Vintage Books USA");
+                "Vintage Books USA","AVAILABLE");
         Book book2 = new Book((long) 2,
                 "375704965",
                 "Harry Potter",
                 "JK Rowling",
                 "1990",
-                "Vintage Books USA");
+                "Vintage Books USA","AVAILABLE");
         bookRepository.save(book1);
         bookRepository.save(book2);
 
         List<Book> bookList = bibliotecaService.getBooksByCount(1);
+
+        assertEquals(1, bookList.size());
+    }
+
+    @Test
+    void expectListAllAvailableBooks() throws NoBooksFoundException {
+        bookRepository.deleteAll();
+        Book book = new Book((long) 1,
+                "375704965",
+                "Harry Potter",
+                "JK Rowling",
+                "1990",
+                "Vintage Books USA","AVAILABLE");
+        Book book1 = new Book((long) 1,
+                "375704995",
+                "Harry Potter Sorcerers Stone",
+                "JK Rowling",
+                "1990",
+                "Vintage Books USA","CHECKEDOUT");
+        bookRepository.save(book);
+        bookRepository.save(book1);
+
+        List<Book> bookList = bibliotecaService.getAllBooks();
 
         assertEquals(1, bookList.size());
     }
