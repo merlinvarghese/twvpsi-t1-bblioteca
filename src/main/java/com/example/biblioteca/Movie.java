@@ -40,7 +40,8 @@ public class Movie {
   Long getId() {
     return id;
   }
-  public Movie(long id, String name,String year, String director, String rating) {
+
+  public Movie(long id, String name, String year, String director, String rating) {
     this.id = id;
     this.name = name;
     this.year = year;

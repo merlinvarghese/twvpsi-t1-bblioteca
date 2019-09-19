@@ -5,19 +5,22 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 
+import javax.validation.ConstraintViolationException;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
+import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SuppressWarnings("ALL")
 @WebMvcTest
+@TestPropertySource(properties = {"default.books.count = 1","default.movies.count = 1"})
 class BibliotecaControllerTest {
     @Autowired
     private MockMvc mockMvc;
@@ -28,107 +31,122 @@ class BibliotecaControllerTest {
     @Test
     void expectWelcomeMessageOnBibliotecaInvocation() throws Exception {
         mockMvc.perform(get(""))
-                .andExpect(status().isOk())
-                .andExpect(content().string("Welcome to Biblioteca!"));
+            .andExpect(status().isOk())
+            .andExpect(content().string("Welcome to Biblioteca!"));
     }
 
     @Test
     void expectBookDetailsForAGivenBookId() throws Exception {
         when(bibliotecaService.getBookById(1L)).thenReturn(
-                (new Book(1L, "375704965","A Judgement in Stone",
-                "Ruth Rendell","2000","Vintage Books USA")));
+            (new Book(1L, "375704965", "A Judgement in Stone",
+                "Ruth Rendell", "2000", "Vintage Books USA")));
 
-        mockMvc.perform(get("/books/{id}",1)
-               .accept(MediaType.APPLICATION_JSON))
-               .andExpect(status().isOk())
-                .andExpect(content().json("{\"isbn\":\"375704965\",\"title\":\"A Judgement in Stone\", \"author\":\"Ruth Rendell\"," +
-                        "\"published_year\":\"2000\", \"publisher\":\"Vintage Books USA\"}"));
+        mockMvc.perform(get("/books/{id}", 1)
+            .accept(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk())
+            .andExpect(content().json("{\"isbn\":\"375704965\",\"title\":\"A Judgement in Stone\", \"author\":\"Ruth Rendell\"," +
+                "\"published_year\":\"2000\", \"publisher\":\"Vintage Books USA\"}"));
 
         verify(bibliotecaService).getBookById(1L);
     }
 
     @Test
     void expectNoBookFoundForAGivenBookId() throws Exception {
-        when(bibliotecaService.getBookById(200L)).thenThrow(new NoBooksFoundException("No Book found for book id = 200"));
+        when(bibliotecaService.getBookById(200L)).thenThrow(new NoBookFoundException("No Book found"));
 
-        mockMvc.perform(get("/books/{id}",200)
-                .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isNotFound());
+        mockMvc.perform(get("/books/{id}", 200)
+            .accept(MediaType.APPLICATION_JSON))
+            .andExpect(status().isNotFound());
 
         verify(bibliotecaService).getBookById(200L);
     }
 
     @Test
-    void expectExceptionForNonNumericId() throws Exception {
-        mockMvc.perform(get("/books/{id}","id")
-                .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest());
+    void expectEmptyArrayWhenNoBooksAreAvailable() throws Exception {
+        long defaultNumberOfBooks = 2L;
+        List<Book> bookList = new ArrayList<>();
+        when(bibliotecaService.getBooksByCount(defaultNumberOfBooks)).thenReturn(bookList);
 
-        verify(bibliotecaService, never()).getBookById(1L);
+        mockMvc.perform(get("/books?max=2"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$", hasSize(0)));
+
+        verify(bibliotecaService).getBooksByCount(defaultNumberOfBooks);
     }
 
-    void shouldlistAllbooks() throws Exception {
-        List<Book> books = new ArrayList<>();
-        books.add(new Book((long) 1,
+    @Test
+    void expectListOfBooksByCount() throws Exception {
+        List<Book> books = Collections.singletonList(
+            new Book((long) 1,
                 "375704965",
                 "Harry Potter",
                 "JK Rowling",
                 "1990",
-                "Vintage Books USA"));
-
-        when(bibliotecaService.getAllBooks()).thenReturn(books);
-
-        mockMvc.perform(get("/books"))
-                .andExpect(status().isOk())
-                .andExpect(content().json("[{\"isbn\":\"375704965\"," +
-                        "\"title\":\"Harry Potter\"," +
-                        "\"author\":\"JK Rowling\"," +
-                        "\"published_year\":\"1990\"," +
-                        "\"publisher\":\"Vintage Books USA\"}]"));
-
-        verify(bibliotecaService).getAllBooks();
-    }
-
-    @Test
-    void shouldFailToListBooksWhenNoBooksAvailable() throws Exception {
-        when(bibliotecaService.getAllBooks()).thenThrow(NoBooksFoundException.class);
-
-        mockMvc.perform(get("/books"))
-                .andExpect(status().isNotFound());
-
-        verify(bibliotecaService).getAllBooks();
-    }
-
-    @Test
-    void shouldListBooksByCount() throws Exception {
-        List<Book> books = Arrays.asList(
-                new Book((long) 1,
-                        "375704965",
-                        "Harry Potter",
-                        "JK Rowling",
-                        "1990",
-                        "Vintage Books USA")
+                "Vintage Books USA")
         );
-        when(bibliotecaService.getBooksByCount((long) 1)).thenReturn(books);
+        when(bibliotecaService.getBooksByCount(1)).thenReturn(books);
 
-        mockMvc.perform(get("/books?booksCount=1"))
-                .andExpect(status().isOk())
-                .andExpect(content().json("[{\"isbn\":\"375704965\"," +
-                        "\"title\":\"Harry Potter\"," +
-                        "\"author\":\"JK Rowling\"," +
-                        "\"published_year\":\"1990\"," +
-                        "\"publisher\":\"Vintage Books USA\"}]"));
+        mockMvc.perform(get("/books?max=1"))
+            .andExpect(status().isOk())
+            .andExpect(content().json("[{\"isbn\":\"375704965\"," +
+                "\"title\":\"Harry Potter\"," +
+                "\"author\":\"JK Rowling\"," +
+                "\"published_year\":\"1990\"," +
+                "\"publisher\":\"Vintage Books USA\"}]"));
 
-        verify(bibliotecaService).getBooksByCount((long) 1);
+        verify(bibliotecaService).getBooksByCount(1);
     }
 
-    void expectListOfAllMovies() throws Exception {
-        List<Movie> movies = Arrays.asList(
+    @Test
+    void expectDefaultNumberOfBooksWhenMaxNotSpecified() throws Exception {
+        List<Book> books = Collections.singletonList(
+            new Book((long) 1,
+                "375704965",
+                "Harry Potter",
+                "JK Rowling",
+                "1990",
+                "Vintage Books USA")
+        );
+        when(bibliotecaService.getBooksByCount(1)).thenReturn(books);
+
+        mockMvc.perform(get("/books"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$", hasSize(1)));
+
+        verify(bibliotecaService).getBooksByCount(1);
+    }
+
+    @Test
+    void expectBadRequestExceptionWhenMaxIsNegative() throws Exception {
+        when(bibliotecaService.getBooksByCount(-1)).thenThrow(ConstraintViolationException.class);
+
+        mockMvc.perform(get("/books?max=-1"))
+            .andExpect(status().isBadRequest());
+
+        verify(bibliotecaService, never()).getBooksByCount(-1);
+    }
+
+    @Test
+    void expectEmptyArrayWhenNoMoviesAreAvailable() throws Exception {
+        long defaultNumberOfMovies = 2L;
+        List<Movie> movieList = new ArrayList<>();
+        when(bibliotecaService.getMoviesByCount(defaultNumberOfMovies)).thenReturn(movieList);
+
+        mockMvc.perform(get("/movies?max=2"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$", hasSize(0)));
+
+        verify(bibliotecaService).getMoviesByCount(defaultNumberOfMovies);
+    }
+
+    @Test
+    void expectListOfMoviesByCount() throws Exception {
+        List<Movie> movies = Collections.singletonList(
             new Movie((long) 1,
                 "Harry potter",
                 "2003",
                 "Chris Columbus","8"));
-        when(bibliotecaService.getMoviesByCount((long) 1)).thenReturn(movies);
+        when(bibliotecaService.getMoviesByCount(1)).thenReturn(movies);
 
         mockMvc.perform(get("/movies?max=1"))
             .andExpect(status().isOk())
@@ -137,6 +155,32 @@ class BibliotecaControllerTest {
                 "\"director\":\"Chris Columbus\"," +
                 "\"rating\":\"8\"}]"));
 
-        verify(bibliotecaService).getBooksByCount((long) 1);
+        verify(bibliotecaService).getMoviesByCount(1);
+    }
+
+    @Test
+    void expectDefaultNumberOfMoviesWhenMaxNotSpecified() throws Exception {
+        List<Movie> movies = Collections.singletonList(
+            new Movie((long) 1,
+                "Harry potter",
+                "2003",
+                "Chris Columbus","8"));
+        when(bibliotecaService.getMoviesByCount(1)).thenReturn(movies);
+
+        mockMvc.perform(get("/movies"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$", hasSize(1)));
+
+        verify(bibliotecaService).getMoviesByCount(1);
+    }
+
+    @Test
+    void expectBadRequestWhenMaxIsNegativeForMovies() throws Exception {
+        when(bibliotecaService.getMoviesByCount(-1)).thenThrow(ConstraintViolationException.class);
+
+        mockMvc.perform(get("/movies?max=-1"))
+            .andExpect(status().isBadRequest());
+
+        verify(bibliotecaService, never()).getMoviesByCount(-1);
     }
 }

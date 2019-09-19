@@ -11,60 +11,60 @@ import java.util.Objects;
 
 @Entity
 public class Book {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @JsonProperty
-    private final Long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @JsonProperty
+  private final Long id;
 
-    @JsonProperty
-    private final String isbn;
+  @JsonProperty
+  private final String isbn;
 
-    @JsonProperty
-    private final String title;
+  @JsonProperty
+  private final String title;
 
-    @JsonProperty
-    private final String author;
+  @JsonProperty
+  private final String author;
 
-    @JsonProperty
-    private final String published_year;
+  @JsonProperty
+  private final String published_year;
 
-    @JsonProperty
-    private final String publisher;
+  @JsonProperty
+  private final String publisher;
 
-    @SuppressWarnings("unused")
-    Book() {
-        this.id = null;
-        this.isbn = null;
-        this.title = null;
-        this.author = null;
-        this.published_year = null;
-        this.publisher = null;
-    }
+  @SuppressWarnings("unused")
+  Book() {
+    this.id = null;
+    this.isbn = null;
+    this.title = null;
+    this.author = null;
+    this.published_year = null;
+    this.publisher = null;
+  }
 
-    Book(Long id, String isbn, String title, String author, String published_year, String publisher) {
-        this.id = id;
-        this.isbn = isbn;
-        this.title = title;
-        this.author = author;
-        this.published_year = published_year;
-        this.publisher = publisher;
-    }
+  Book(Long id, String isbn, String title, String author, String published_year, String publisher) {
+    this.id = id;
+    this.isbn = isbn;
+    this.title = title;
+    this.author = author;
+    this.published_year = published_year;
+    this.publisher = publisher;
+  }
 
-    @JsonIgnore
-    Long getId() {
-        return id;
-    }
+  @JsonIgnore
+  Long getId() {
+    return id;
+  }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Book book = (Book) o;
-        return Objects.equals(id, book.id);
-    }
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    Book book = (Book) o;
+    return Objects.equals(id, book.id);
+  }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
-    }
+  @Override
+  public int hashCode() {
+    return Objects.hash(id);
+  }
 }
