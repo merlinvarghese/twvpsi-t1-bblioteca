@@ -86,15 +86,12 @@ public class Book {
         this.checkout_status = checkout_status;
     }
 
-    String getCheckout_status()
-    {
+    String getCheckout_status() {
         return checkout_status;
     }
 
-     boolean checkout(Book bookBeforeCheckoutStatusChange) {
+    boolean checkout(Book bookBeforeCheckoutStatusChange) {
 
-         return this.checkout_status.equals("CHECKEDOUT") && bookBeforeCheckoutStatusChange.checkout_status.equals("AVAILABLE");
-     }
-
-
+        return this.checkout_status.equals("CHECKEDOUT") && bookBeforeCheckoutStatusChange.checkout_status.equals("AVAILABLE");
+    }
 }

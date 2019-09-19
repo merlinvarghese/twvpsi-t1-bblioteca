@@ -1,15 +1,16 @@
 package com.example.biblioteca;
 
-public class Messages {
+import com.fasterxml.jackson.annotation.JsonProperty;
 
-    public String getMessage() {
+class Messages {
+    @JsonProperty
+    String message;
+
+    String getMessage() {
         return message;
     }
 
-    public void setMessage(String message) {
+    void setMessage(String message) {
         this.message = message;
     }
-
-    String message;
-
 }
