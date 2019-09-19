@@ -27,7 +27,7 @@ class BibliotecaController {
         return bibliotecaService.getBookById(id);
     }
 
-    @GetMapping(value = {"/books"})
+    @GetMapping("/books")
     List<Book> getBooksByCount(@Valid @RequestParam(value = "max", required = false, defaultValue = "${default.books.count}")
                                @Positive
                                @NumberFormat(style = NumberFormat.Style.NUMBER) Long booksCount) {
