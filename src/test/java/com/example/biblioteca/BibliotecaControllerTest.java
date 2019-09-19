@@ -116,12 +116,12 @@ class BibliotecaControllerTest {
     }
 
     @Test
-    void expectBadRequestExceptionWhenMaxIsNegative() throws Exception {
-        when(bibliotecaService.getBooksByCount(-1)).thenThrow(ConstraintViolationException.class);
+    void expectNotFoundExceptionWhenMaxIsNegative() throws Exception {
+        when(bibliotecaService.getBooksByCount(-1)).thenThrow(NoBookFoundException.class);
 
         mockMvc.perform(get("/books?max=-1"))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isNotFound());
 
-        verify(bibliotecaService, never()).getBooksByCount(-1);
+        verify(bibliotecaService).getBooksByCount(-1);
     }
 }

@@ -39,7 +39,7 @@ class BibliotecaServiceTest {
     }
 
     @Test
-    void expectListDefaultNumOfBooks() {
+    void expectListDefaultNumOfBooks() throws NoBookFoundException {
         int defaultNumberOfBooks = 1;
         bookRepository.deleteAll();
         Book book1 = new Book((long) 1,
@@ -63,13 +63,13 @@ class BibliotecaServiceTest {
     }
 
     @Test
-    void expectEmptyArrayWhenBooksNotAvailableForListing() {
+    void expectEmptyArrayWhenBooksNotAvailableForListing() throws NoBookFoundException {
         bookRepository.deleteAll();
         assertEquals(0, bibliotecaService.getBooksByCount(2L).size());
     }
 
     @Test
-    void expectListOfBooksByCount() {
+    void expectListOfBooksByCount() throws NoBookFoundException {
         bookRepository.deleteAll();
         Book book1 = new Book((long) 1,
                 "375704965",
