@@ -39,7 +39,7 @@ class BibliotecaService {
         return resultBooks;
     }
 
-    public Messages checkout(Book book) throws NoBookFoundException {
+    public Messages checkout(Book book) throws NotFoundException {
         Messages message = new Messages();
         Book bookBeforeCheckoutStatusChange = getBookById(book.getId());
         boolean checkoutSuccess = book.checkout(bookBeforeCheckoutStatusChange);

@@ -9,9 +9,9 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import java.util.Objects;
 
+@SuppressWarnings("unused")
 @Entity
 public class Movie {
-
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @JsonProperty

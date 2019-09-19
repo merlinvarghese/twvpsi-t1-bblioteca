@@ -9,6 +9,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+@SuppressWarnings("unused")
 @SpringBootTest
 class BibliotecaServiceTest {
     @Autowired
@@ -190,7 +191,7 @@ class BibliotecaServiceTest {
     }
 
     @Test
-    void expectSuccessfulBookCheckout() throws NoBookFoundException {
+    void expectSuccessfulBookCheckout() throws NotFoundException {
         String checkout_success = "Thank you! Enjoy the book";
         bookRepository.deleteAll();
         Book book = new Book((long) 1,

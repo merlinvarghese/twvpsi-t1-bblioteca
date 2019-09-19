@@ -6,9 +6,9 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import javax.validation.constraints.Positive;
 import java.util.List;
 
+@SuppressWarnings("ALL")
 @Validated
 @RestController
 class BibliotecaController {
@@ -49,7 +49,7 @@ class BibliotecaController {
     }
 
     @PutMapping("/books")
-    Messages updateCheckoutStatus(@RequestBody Book book) throws NoBookFoundException {
+    Messages updateCheckoutStatus(@RequestBody Book book) throws NotFoundException {
         return bibliotecaService.checkout(book);
     }
 }

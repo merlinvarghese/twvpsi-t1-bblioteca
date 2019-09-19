@@ -13,6 +13,7 @@ public class Book {
     @JsonProperty
     private final Long id;
 
+    @SuppressWarnings("unused")
     @JsonProperty
     private final String isbn;
 
