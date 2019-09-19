@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+@SuppressWarnings("unused")
 @ControllerAdvice
 class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
@@ -26,16 +27,16 @@ class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler {
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
                                                                   HttpHeaders headers,
                                                                   HttpStatus status, WebRequest request) {
-
         Map<String, Object> body = new LinkedHashMap<>();
         body.put("timestamp", new Date());
         body.put("status", status.value());
 
         //Get all errors
+        @SuppressWarnings("Convert2MethodRef")
         List<String> errors = ex.getBindingResult()
                 .getFieldErrors()
-               .stream()
-               .map(x -> x.getDefaultMessage())
+                .stream()
+                .map(x -> x.getDefaultMessage())
                 .collect(Collectors.toList());
 
         body.put("errors", errors);

@@ -35,7 +35,7 @@ class BibliotecaControllerTest {
     }
 
     @Test
-    void expectBookDetailsForAGivenBookId() throws Exception {
+    void expectBookDetailsForGivenBookId() throws Exception {
         when(bibliotecaService.getBookById(1L)).thenReturn(
                 (new Book(1L, "375704965", "A Judgement in Stone",
                         "Ruth Rendell", "2000", "Vintage Books USA")));
@@ -43,14 +43,14 @@ class BibliotecaControllerTest {
         mockMvc.perform(get("/books/{id}", 1)
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(content().json("{\"isbn\":\"375704965\",\"title\":\"A Judgement in Stone\", \"author\":\"Ruth Rendell\"," +
-                        "\"published_year\":\"2000\", \"publisher\":\"Vintage Books USA\"}"));
+                .andExpect(content().json("{\"isbn\":\"375704965\",\"title\":\"A Judgement in Stone\"" +
+                        ", \"author\":\"Ruth Rendell\",\"published_year\":\"2000\", \"publisher\":\"Vintage Books USA\"}"));
 
         verify(bibliotecaService).getBookById(1L);
     }
 
     @Test
-    void expectNoBookFoundForAGivenBookId() throws Exception {
+    void expectNoBookReturnedWhenBookWithGivenIdDoesNotExist() throws Exception {
         when(bibliotecaService.getBookById(200L)).thenThrow(new NoBookFoundException("No Book found"));
 
         mockMvc.perform(get("/books/{id}", 200)
@@ -61,7 +61,7 @@ class BibliotecaControllerTest {
     }
 
     @Test
-    void expectEmptyArrayWhenNoBooksAreAvailable() throws Exception {
+    void expectEmptyListWhenNoBooksAreAvailable() throws Exception {
         long defaultNumberOfBooks = 2L;
         List<Book> bookList = new ArrayList<>();
         when(bibliotecaService.getBooksByCount(defaultNumberOfBooks)).thenReturn(bookList);

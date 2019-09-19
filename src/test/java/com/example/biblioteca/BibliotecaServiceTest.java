@@ -39,7 +39,7 @@ class BibliotecaServiceTest {
     }
 
     @Test
-    void shouldListDefaultNumOfBooks() {
+    void expectListDefaultNumOfBooks() {
         int defaultNumberOfBooks = 1;
         bookRepository.deleteAll();
         Book book1 = new Book((long) 1,
