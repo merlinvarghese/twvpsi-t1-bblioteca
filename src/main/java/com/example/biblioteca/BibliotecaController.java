@@ -1,7 +1,6 @@
 package com.example.biblioteca;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.NumberFormat;
 import org.springframework.validation.annotation.Validated;
@@ -11,9 +10,9 @@ import javax.validation.Valid;
 import java.util.List;
 
 @SuppressWarnings("ALL")
+@Api(value = "BibliotecaRestController", description = "REST APIs related to Biblioteca Application!!!!")
 @Validated
 @RestController
-@Api(value = "BibliotecaRestController", description = "REST APIs related to Biblioteca Application!!!!")
 class BibliotecaController {
     @Autowired
     private BibliotecaService bibliotecaService;
@@ -25,14 +24,15 @@ class BibliotecaController {
     }
 
     @GetMapping("/books")
-    @ApiOperation(value = "Get Books List for a Given Count, default=5", response = List.class, tags = "List of Books")
-    List<Book> getBooksByCount(@Valid @RequestParam(value = "max", required = false, defaultValue = "${default.books.count}")
+    @ApiOperation(value = "Get Books Listing for a Given Limit", response = List.class, tags = "List Books",
+            notes="A User can Browse through the list of books.\n ")
+    List<Book> getBooksByCount(@ApiParam("Maximum Listing of Books, if max not provided: Default Value = 5 ") @Valid @RequestParam(value = "max", required = false, defaultValue = "${default.books.count}")
                                @NumberFormat(style = NumberFormat.Style.NUMBER) Long booksCount) throws NotFoundException {
         return bibliotecaService.getBooksByCount(booksCount);
     }
 
     @GetMapping("/books/{id}")
-    @ApiOperation(value = "Get specific Book for a given Book Id", response = Book.class, tags = "Book Details")
+    @ApiOperation(value = "Get Specific Book for a given Book Id", response = Book.class, tags = "Book Details")
     Book getBookById(@Valid @PathVariable("id")
                      @NumberFormat(style = NumberFormat.Style.NUMBER) Long id)
             throws NotFoundException {
@@ -40,7 +40,7 @@ class BibliotecaController {
     }
 
     @GetMapping("/movies")
-    @ApiOperation(value = "Get Movie List For a Given Count, default=5", response = List.class, tags = "List Movies")
+    @ApiOperation(value = "Get Movie Listing For a Given Limit", response = List.class, tags = "List Movies")
     List<Movie> getMoviesByCount(@Valid
                                  @RequestParam(value = "max", required = false, defaultValue = "${default.movies.count}")
                                  @NumberFormat(style = NumberFormat.Style.NUMBER)
