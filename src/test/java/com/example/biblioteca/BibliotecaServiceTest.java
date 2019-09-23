@@ -201,7 +201,6 @@ class BibliotecaServiceTest {
                 "1990",
                 "Vintage Books USA","AVAILABLE");
         Book savedBook = bookRepository.save(book);
-        savedBook.setCheckout_status("CHECKEDOUT");
         Messages message = bibliotecaService.checkout(savedBook);
 
         assertEquals(checkout_success, message.getMessage());
