@@ -147,7 +147,7 @@ class BibliotecaControllerTest {
                 new Movie(1L,
                         "Harry potter",
                         "2003",
-                        "Chris Columbus", "8"));
+                        "Chris Columbus", "8","120","Adventure","G","Harry Potter and the Philosophers Stone"));
         when(bibliotecaService.getMoviesByCount(1)).thenReturn(movies);
 
         mockMvc.perform(get("/movies?max=1"))
@@ -166,7 +166,7 @@ class BibliotecaControllerTest {
                 new Movie(1L,
                         "Harry potter",
                         "2003",
-                        "Chris Columbus", "8"));
+                        "Chris Columbus", "8","120","Adventure","G","Harry Potter and the Philosophers Stone"));
         when(bibliotecaService.getMoviesByCount(1)).thenReturn(movies);
 
         mockMvc.perform(get("/movies"))
@@ -190,7 +190,7 @@ class BibliotecaControllerTest {
     void expectMovieDetailsForAGivenMovieId() throws Exception {
         when(bibliotecaService.getMovieById(1L)).thenReturn(
                 (new Movie(1L, "Harry potter", "2003", "Chris Columbus",
-                        "8")));
+                        "8","120","Adventure","G","Harry Potter and the Philosophers Stone")));
 
         mockMvc.perform(get("/movies/{id}", 1L)
                 .accept(MediaType.APPLICATION_JSON))

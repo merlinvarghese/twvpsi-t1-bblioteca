@@ -29,12 +29,28 @@ public class Movie {
   @JsonProperty
   private final String rating;
 
+  @JsonProperty
+  private final String runtime;
+
+  @JsonProperty
+  private final String genre;
+
+  @JsonProperty
+  private final String motionpicturerating;
+
+  @JsonProperty
+  private final String storyline;
+
   public Movie() {
     this.id = null;
     this.name = null;
     this.year = null;
     this.director = null;
     this.rating = null;
+    this.runtime=null;
+    this.genre=null;
+    this.motionpicturerating=null;
+    this.storyline=null;
   }
 
   @JsonIgnore
@@ -42,12 +58,16 @@ public class Movie {
     return id;
   }
 
-  public Movie(long id, String name, String year, String director, String rating) {
+  public Movie(long id, String name, String year, String director, String rating,String runtime,String genre,String motionpicturerating,String storyline) {
     this.id = id;
     this.name = name;
     this.year = year;
     this.director = director;
     this.rating = rating;
+    this.runtime=runtime;
+    this.genre=genre;
+    this.motionpicturerating=motionpicturerating;
+    this.storyline=storyline;
   }
 
   @Override

@@ -75,11 +75,21 @@ class BibliotecaServiceTest {
         Movie movie1 = new Movie(1,
                 "Harry potter",
                 "2003",
-                "Chris Columbus", "8");
+                "Chris Columbus",
+                "8",
+                "120",
+                "Advanture",
+                "G",
+                "Harry Potter and the Philosophers Stone");
         Movie movie2 = new Movie(2,
                 "Finding Nemo",
                 "2003",
-                "Andrew Stanton", "7");
+                "Andrew Stanton",
+                "7",
+                "150",
+                "Cartoon",
+                "G",
+                "Finding Nemo was released on May 30, 2003");
         movieRepository.save(movie1);
         movieRepository.save(movie2);
 
@@ -100,11 +110,21 @@ class BibliotecaServiceTest {
         Movie movie1 = new Movie((long) 1,
                 "Harry potter",
                 "2003",
-                "Chris Columbus", "8");
+                "Chris Columbus",
+                "8",
+                "120",
+                "Adventure",
+                "G",
+                "Harry Potter and the Philosophers Stone");
         Movie movie2 = new Movie((long) 2,
                 "Finding Nemo",
                 "2003",
-                "Andrew Stanton", "7");
+                "Andrew Stanton",
+                "7",
+                "118",
+                "Cartoon",
+                "G",
+                "Finding Nemo was released on May 30, 2003");
 
         movieRepository.save(movie1);
         movieRepository.save(movie2);
@@ -178,7 +198,11 @@ class BibliotecaServiceTest {
                 "Harry potter",
                 "2003",
                 "Chris Columbus",
-                "8");
+                "8",
+                "120",
+                "Adventure",
+                "G",
+                "Harry Potter and the Philosophers Stone");
         Movie savedMovie = movieRepository.save(movie);
         Movie fetchedMovie = bibliotecaService.getMovieById(savedMovie.getId());
         assertEquals(savedMovie, fetchedMovie);
@@ -215,7 +239,8 @@ class BibliotecaServiceTest {
                 "Harry Potter",
                 "JK Rowling",
                 "1990",
-                "Vintage Books USA","CHECKEDOUT");
+                "Vintage Books USA",
+                "CHECKEDOUT");
         Book savedBook = bookRepository.save(book);
         Messages message = bibliotecaService.checkout(savedBook.getId());
 
