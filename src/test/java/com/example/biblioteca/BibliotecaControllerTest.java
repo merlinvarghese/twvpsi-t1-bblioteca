@@ -1,6 +1,5 @@
 package com.example.biblioteca;
 
-import jdk.nashorn.internal.ir.annotations.Ignore;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -9,15 +8,13 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 
-import javax.validation.ConstraintViolationException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest
@@ -147,7 +144,7 @@ class BibliotecaControllerTest {
     @Test
     void expectListOfMoviesByCount() throws Exception {
         List<Movie> movies = Collections.singletonList(
-                new Movie((long) 1,
+                new Movie(1L,
                         "Harry potter",
                         "2003",
                         "Chris Columbus", "8"));
@@ -166,7 +163,7 @@ class BibliotecaControllerTest {
     @Test
     void expectDefaultNumberOfMoviesWhenMaxNotSpecified() throws Exception {
         List<Movie> movies = Collections.singletonList(
-                new Movie((long) 1,
+                new Movie(1L,
                         "Harry potter",
                         "2003",
                         "Chris Columbus", "8"));
@@ -217,21 +214,60 @@ class BibliotecaControllerTest {
         verify(bibliotecaService).getMovieById(200L);
     }
 
-    @Test @Ignore
+    @Test
     void expectSuccessFulBookCheckOut() throws Exception {
-        String checkout_success = "Thank you! Enjoy the book";
+        String checkout_message = "Thank you! Enjoy the book.";
         Messages message = new Messages();
-        message.setMessage(checkout_success);
-        when(bibliotecaService.checkout(any(Book.class))).thenReturn(message);
+        message.setMessage(checkout_message);
+        when(bibliotecaService.checkout(any(Long.class))).thenReturn(message);
 
-        mockMvc.perform(put("/books").content("{\"id\":1,\"isbn\":\"786863986\"," +
-                "\"title\":\"A Monk Swimming\",\"author\":\"Malachy McCourt\",\"published_year\":\"1998\"," +
-                "\"publisher\":\"Hyperion\",\"checkout_status\":\"CHECKEDOUT\"}")
-                .contentType(MediaType.APPLICATION_JSON))
+        mockMvc.perform(patch("/books/1/checkout"))
                 .andExpect(status().isOk())
-                .andExpect(content().string("{\"message\":\"Thank you! Enjoy the book\"}"));
+                .andExpect(content().string("{\"message\":\"Thank you! Enjoy the book.\"}"));
 
-        verify(bibliotecaService).checkout(any(Book.class));
+        verify(bibliotecaService).checkout(1L);
+    }
+
+    @Test
+    void expectFailsToCheckoutWhenBookNotAvailable() throws Exception {
+        String checkout_message = "That book is not available.";
+        Messages message = new Messages();
+        message.setMessage(checkout_message);
+        when(bibliotecaService.checkout(any(Long.class))).thenReturn(message);
+
+        mockMvc.perform(patch("/books/1/checkout"))
+                .andExpect(status().isOk())
+                .andExpect(content().string("{\"message\":\"That book is not available.\"}"));
+
+        verify(bibliotecaService).checkout(1L);
+    }
+
+    @Test
+    void expectSuccessfulBookCheckIn() throws Exception {
+        String checkin_message = "Thank you for returning the book.";
+        Messages message = new Messages();
+        message.setMessage(checkin_message);
+        when(bibliotecaService.returnBook(any(Long.class))).thenReturn(message);
+
+        mockMvc.perform(patch("/books/1/checkin"))
+                .andExpect(status().isOk())
+                .andExpect(content().string("{\"message\":\"Thank you for returning the book.\"}"));
+
+        verify(bibliotecaService).returnBook(1L);
+    }
+
+    @Test
+    void expectFailsToCheckInWhenBookNotCheckedOut() throws Exception {
+        String checkin_message = "That is not a valid book to return.";
+        Messages message = new Messages();
+        message.setMessage(checkin_message);
+        when(bibliotecaService.returnBook(any(Long.class))).thenReturn(message);
+
+        mockMvc.perform(patch("/books/1/checkin"))
+                .andExpect(status().isOk())
+                .andExpect(content().string("{\"message\":\"That is not a valid book to return.\"}"));
+
+        verify(bibliotecaService).returnBook(1L);
     }
 
 }

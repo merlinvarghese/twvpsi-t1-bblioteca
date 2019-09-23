@@ -192,7 +192,7 @@ class BibliotecaServiceTest {
 
     @Test
     void expectSuccessfulBookCheckout() throws NotFoundException {
-        String checkout_success = "Thank you! Enjoy the book";
+        String expectedMessage = "Thank you! Enjoy the book.";
         bookRepository.deleteAll();
         Book book = new Book((long) 1,
                 "375704965",
@@ -201,9 +201,56 @@ class BibliotecaServiceTest {
                 "1990",
                 "Vintage Books USA","AVAILABLE");
         Book savedBook = bookRepository.save(book);
-        savedBook.setCheckout_status("CHECKEDOUT");
-        Messages message = bibliotecaService.checkout(savedBook);
+        Messages message = bibliotecaService.checkout(savedBook.getId());
 
-        assertEquals(checkout_success, message.getMessage());
+        assertEquals(expectedMessage, message.getMessage());
+    }
+
+    @Test
+    void expectFailsToCheckoutWhenBookNotAvailable() throws NotFoundException {
+        String expectedMessage = "That book is not available.";
+        bookRepository.deleteAll();
+        Book book = new Book((long) 1,
+                "375704965",
+                "Harry Potter",
+                "JK Rowling",
+                "1990",
+                "Vintage Books USA","CHECKEDOUT");
+        Book savedBook = bookRepository.save(book);
+        Messages message = bibliotecaService.checkout(savedBook.getId());
+
+        assertEquals(expectedMessage, message.getMessage());
+    }
+
+    @Test
+    void expectSuccessfulBookCheckIn() throws NotFoundException {
+        String expectedMessage = "Thank you for returning the book.";
+        bookRepository.deleteAll();
+        Book book = new Book((long) 1,
+                "375704965",
+                "Harry Potter",
+                "JK Rowling",
+                "1990",
+                "Vintage Books USA","CHECKEDOUT");
+        Book savedBook = bookRepository.save(book);
+        Messages message = bibliotecaService.returnBook(savedBook.getId());
+
+        assertEquals(expectedMessage, message.getMessage());
+    }
+
+    @Test
+    void expectFailsToCheckInWhenBookNotCheckedOut() throws NotFoundException {
+        String expectedMessage = "That is not a valid book to return.";
+        bookRepository.deleteAll();
+        Book book = new Book((long) 1,
+                "375704965",
+                "Harry Potter",
+                "JK Rowling",
+                "1990",
+                "Vintage Books USA","AVAILABLE");
+        Book savedBook = bookRepository.save(book);
+        Messages message = bibliotecaService.returnBook(savedBook.getId());
+
+        assertEquals(expectedMessage, message.getMessage());
     }
 }

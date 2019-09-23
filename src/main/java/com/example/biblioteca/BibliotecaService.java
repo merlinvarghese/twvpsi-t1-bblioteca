@@ -39,19 +39,29 @@ class BibliotecaService {
         return resultBooks;
     }
 
-    public Messages checkout(Book book) throws NotFoundException {
+    Messages checkout(Long id) throws NotFoundException {
         Messages message = new Messages();
-        Book bookBeforeCheckoutStatusChange = getBookById(book.getId());
-        boolean checkoutSuccess = book.checkout(bookBeforeCheckoutStatusChange);
-        bookRepository.save(book);
-
+        Book book = getBookById(id);
+        boolean checkoutSuccess = book.checkOut();
         if (checkoutSuccess) {
-            message.setMessage("Thank you! Enjoy the book");
-        }
-        else {
+            bookRepository.save(book);
+            message.setMessage("Thank you! Enjoy the book.");
+        } else {
             message.setMessage("That book is not available.");
         }
+        return message;
+    }
 
+    Messages returnBook(Long id) throws NotFoundException {
+        Messages message = new Messages();
+        Book book = getBookById(id);
+        boolean checkInSuccess = book.checkIn();
+        if (checkInSuccess) {
+            bookRepository.save(book);
+            message.setMessage("Thank you for returning the book.");
+        } else {
+            message.setMessage("That is not a valid book to return.");
+        }
         return message;
     }
 

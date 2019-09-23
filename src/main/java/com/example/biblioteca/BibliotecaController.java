@@ -48,8 +48,17 @@ class BibliotecaController {
         return bibliotecaService.getMovieById(id);
     }
 
-    @PutMapping("/books")
-    Messages updateCheckoutStatus(@RequestBody Book book) throws NotFoundException {
-        return bibliotecaService.checkout(book);
+    @PatchMapping("/books/{id}/checkout")
+    Messages updateCheckoutStatus(@Valid @PathVariable("id")
+                                  @NumberFormat(style = NumberFormat.Style.NUMBER)
+                                          Long id) throws NotFoundException {
+        return bibliotecaService.checkout(id);
+    }
+
+    @PatchMapping("/books/{id}/checkin")
+    Messages updateReturnStatus(@Valid @PathVariable("id")
+                                @NumberFormat(style = NumberFormat.Style.NUMBER)
+                                        Long id) throws NotFoundException {
+        return bibliotecaService.returnBook(id);
     }
 }
