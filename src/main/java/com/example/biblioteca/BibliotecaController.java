@@ -1,5 +1,6 @@
 package com.example.biblioteca;
 
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.NumberFormat;
@@ -12,6 +13,7 @@ import java.util.List;
 @SuppressWarnings("ALL")
 @Validated
 @RestController
+@Api(value = "BibliotecaRestController", description = "REST APIs related to Biblioteca Application!!!!")
 class BibliotecaController {
     @Autowired
     private BibliotecaService bibliotecaService;
@@ -30,7 +32,7 @@ class BibliotecaController {
     }
 
     @GetMapping("/books/{id}")
-    @ApiOperation(value = "Get specific Book for a given Book Id", response = Book.class, tags = "A Book Details")
+    @ApiOperation(value = "Get specific Book for a given Book Id", response = Book.class, tags = "Book Details")
     Book getBookById(@Valid @PathVariable("id")
                      @NumberFormat(style = NumberFormat.Style.NUMBER) Long id)
             throws NotFoundException {
@@ -47,7 +49,7 @@ class BibliotecaController {
     }
 
     @GetMapping("/movies/{id}")
-    @ApiOperation(value = "Get Movie Details for a specific Movie Id", response = Movie.class, tags = "A Movie Details")
+    @ApiOperation(value = "Get Movie Details for a specific Movie Id", response = Movie.class, tags = "Movie Details")
     Movie getMovieById(@Valid @PathVariable("id")
                        @NumberFormat(style = NumberFormat.Style.NUMBER)
                                Long id) throws NotFoundException {
@@ -55,7 +57,7 @@ class BibliotecaController {
     }
 
     @PatchMapping("/books/{id}/checkout")
-    @ApiOperation(value = "Checkout the Book given the BookId", response = Messages.class, tags = "CheckoutBook")
+    @ApiOperation(value = "Checkout the Book given the BookId", response = Messages.class, tags = "Checkout Book")
     Messages updateCheckoutStatus(@Valid @PathVariable("id")
                                   @NumberFormat(style = NumberFormat.Style.NUMBER)
                                           Long id) throws NotFoundException {
@@ -63,7 +65,7 @@ class BibliotecaController {
     }
 
     @PatchMapping("/books/{id}/checkin")
-    @ApiOperation(value = "Return the Book given the BookId", response = Movie.class, tags = "ReturnBook")
+    @ApiOperation(value = "Return the Book given the BookId", response = Movie.class, tags = "Return Book")
     Messages updateReturnStatus(@Valid @PathVariable("id")
                                 @NumberFormat(style = NumberFormat.Style.NUMBER)
                                         Long id) throws NotFoundException {
