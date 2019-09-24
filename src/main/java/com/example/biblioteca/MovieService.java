@@ -11,7 +11,7 @@ public class MovieService {
     static final String MOVIE_CHECKOUT_FAIL = "That movie is not available.";
     static final String MOVIE_RETURN_SUCCESS = "Thank you for returning the movie.";
     static final String MOVIE_RETURN_FAIL = "That is not a valid movie to return.";
-    static final String MOVIE_RETURN_FAIL_FOR_INVALID_USER = "This is not valid user to return this book";
+    static final String MOVIE_RETURN_FAIL_FOR_INVALID_USER = "Invalid user";
 
     @SuppressWarnings("unused")
     @Autowired
