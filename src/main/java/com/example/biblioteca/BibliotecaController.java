@@ -14,13 +14,15 @@ import java.util.List;
 @Validated
 @RestController
 class BibliotecaController {
+    private final String welcome_Message = "Welcome to Biblioteca!";
+
     @Autowired
     private BibliotecaService bibliotecaService;
 
     @GetMapping("/")
-    @ApiOperation(value = "Welcome", response = List.class, tags = "Greetings From Biblioteca")
-    String greeting() {
-        return "Welcome to Biblioteca!";
+    @ApiOperation(value = "Welcome", response = Response.class, tags = "Greetings From Biblioteca")
+    Response greeting() {
+        return new Response("true", "Welcome Message to logged in User Successfully", welcome_Message);
     }
 
     @GetMapping("/books")

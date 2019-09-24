@@ -34,9 +34,12 @@ class BibliotecaControllerTest {
     class WelcomeScreenTest {
         @Test
         void expectWelcomeMessageOnBibliotecaInvocation() throws Exception {
+            Response response = new Response("true", "Welcome Message to logged in User Successfully", "Welcome to Biblioteca!");
+            String jsonString = "{\"success\":\"true\",\"message\":\"Welcome Message to logged in User Successfully\",\"data\":\"Welcome to Biblioteca!\"}";
+
             mockMvc.perform(get(""))
                     .andExpect(status().isOk())
-                    .andExpect(content().string("Welcome to Biblioteca!"));
+                    .andExpect(content().json(jsonString));
         }
     }
 
