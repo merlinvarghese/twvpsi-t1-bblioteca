@@ -1,5 +1,6 @@
 package com.example.biblioteca;
 
+import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.NumberFormat;
 import org.springframework.validation.annotation.Validated;
@@ -9,6 +10,7 @@ import javax.validation.Valid;
 import java.util.List;
 
 @SuppressWarnings("ALL")
+@Api(value = "BibliotecaRestController", description = "REST APIs related to Biblioteca Application!!!!")
 @Validated
 @RestController
 class BibliotecaController {
@@ -19,19 +21,21 @@ class BibliotecaController {
     private MovieService movieService;
 
     @GetMapping("/")
+    @ApiOperation(value = "Welcome", response = List.class, tags = "Greetings From Biblioteca")
     String greeting() {
         return "Welcome to Biblioteca!";
     }
 
     @GetMapping("/books")
-    List<Book> getBooksByCount(@Valid
-                               @RequestParam(value = "max", required = false, defaultValue = "${default.books.count}")
-                               @NumberFormat(style = NumberFormat.Style.NUMBER)
-                                       Long booksCount) throws NotFoundException {
+    @ApiOperation(value = "Get Books Listing for a Given Limit", response = List.class, tags = "List Books",
+            notes="A User can Browse through the list of books.\n ")
+    List<Book> getBooksByCount(@ApiParam("Maximum Listing of Books, if max not provided: Default Value = 5 ") @Valid @RequestParam(value = "max", required = false, defaultValue = "${default.books.count}")
+                               @NumberFormat(style = NumberFormat.Style.NUMBER) Long booksCount) throws NotFoundException {
         return bookService.getBooksByCount(booksCount);
     }
 
     @GetMapping("/books/{id}")
+    @ApiOperation(value = "Get Specific Book for a given Book Id", response = Book.class, tags = "Book Details")
     Book getBookById(@Valid @PathVariable("id")
                      @NumberFormat(style = NumberFormat.Style.NUMBER) Long id)
             throws NotFoundException {
@@ -39,6 +43,7 @@ class BibliotecaController {
     }
 
     @GetMapping("/movies")
+    @ApiOperation(value = "Get Movie Listing For a Given Limit", response = List.class, tags = "List Movies")
     List<Movie> getMoviesByCount(@Valid
                                  @RequestParam(value = "max", required = false, defaultValue = "${default.movies.count}")
                                  @NumberFormat(style = NumberFormat.Style.NUMBER)
@@ -47,6 +52,7 @@ class BibliotecaController {
     }
 
     @GetMapping("/movies/{id}")
+    @ApiOperation(value = "Get Movie Details for a specific Movie Id", response = Movie.class, tags = "Movie Details")
     Movie getMovieById(@Valid @PathVariable("id")
                        @NumberFormat(style = NumberFormat.Style.NUMBER)
                                Long id) throws NotFoundException {
@@ -54,6 +60,7 @@ class BibliotecaController {
     }
 
     @PatchMapping("/books/{id}/checkout")
+    @ApiOperation(value = "Checkout the Book given the BookId", response = Messages.class, tags = "Checkout Book")
     Messages updateCheckoutStatus(@Valid @PathVariable("id")
                                   @NumberFormat(style = NumberFormat.Style.NUMBER)
                                           Long id) throws NotFoundException {
@@ -61,6 +68,7 @@ class BibliotecaController {
     }
 
     @PatchMapping("/books/{id}/checkin")
+    @ApiOperation(value = "Return the Book given the BookId", response = Movie.class, tags = "Return Book")
     Messages updateReturnStatus(@Valid @PathVariable("id")
                                 @NumberFormat(style = NumberFormat.Style.NUMBER)
                                         Long id) throws NotFoundException {
