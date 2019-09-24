@@ -8,15 +8,15 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-class BibliotecaService {
+class BookService {
+    private static final String CHECKOUT_SUCCESS = "Thank you! Enjoy the book.";
+    private static final String CHECKOUT_FAIL = "That book is not available.";
+    private static final String RETURN_SUCCESS = "Thank you for returning the book.";
+    private static final String RETURN_FAIL = "That is not a valid book to return.";
 
     @SuppressWarnings("unused")
     @Autowired
     private BookRepository bookRepository;
-
-    @SuppressWarnings("unused")
-    @Autowired
-    private MovieRepository movieRepository;
 
     Book getBookById(Long id) throws NotFoundException {
         return bookRepository.findById(id).orElseThrow(() -> new NotFoundException("No book found"));
@@ -45,9 +45,9 @@ class BibliotecaService {
         boolean checkoutSuccess = book.checkOut();
         if (checkoutSuccess) {
             bookRepository.save(book);
-            message.setMessage("Thank you! Enjoy the book.");
+            message.setMessage(CHECKOUT_SUCCESS);
         } else {
-            message.setMessage("That book is not available.");
+            message.setMessage(CHECKOUT_FAIL);
         }
         return message;
     }
@@ -55,34 +55,13 @@ class BibliotecaService {
     Messages returnBook(Long id) throws NotFoundException {
         Messages message = new Messages();
         Book book = getBookById(id);
-        boolean checkInSuccess = book.checkIn();
-        if (checkInSuccess) {
+        boolean returnSuccess = book.checkIn();
+        if (returnSuccess) {
             bookRepository.save(book);
-            message.setMessage("Thank you for returning the book.");
+            message.setMessage(RETURN_SUCCESS);
         } else {
-            message.setMessage("That is not a valid book to return.");
+            message.setMessage(RETURN_FAIL);
         }
         return message;
-    }
-
-    private List<Movie> getAllMovies() {
-        return (List<Movie>) movieRepository.findAll();
-    }
-
-    List<Movie> getMoviesByCount(long count) throws NotFoundException {
-        if ( count <0 ) {
-            throw new NotFoundException("Invalid input");
-        }
-
-        List<Movie> movies = getAllMovies();
-        List<Movie> resultMovies = new ArrayList<>();
-        for (int i = 0; i < movies.size() && i < count; i++) {
-            resultMovies.add(movies.get(i));
-        }
-        return resultMovies;
-    }
-
-    Movie getMovieById(Long id) throws NotFoundException {
-        return movieRepository.findById(id).orElseThrow(() -> new NotFoundException("No Movie found"));
     }
 }

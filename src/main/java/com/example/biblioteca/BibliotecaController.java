@@ -13,7 +13,10 @@ import java.util.List;
 @RestController
 class BibliotecaController {
     @Autowired
-    private BibliotecaService bibliotecaService;
+    private BookService bookService;
+
+    @Autowired
+    private MovieService movieService;
 
     @GetMapping("/")
     String greeting() {
@@ -21,16 +24,18 @@ class BibliotecaController {
     }
 
     @GetMapping("/books")
-    List<Book> getBooksByCount(@Valid @RequestParam(value = "max", required = false, defaultValue = "${default.books.count}")
-                               @NumberFormat(style = NumberFormat.Style.NUMBER) Long booksCount) throws NotFoundException {
-        return bibliotecaService.getBooksByCount(booksCount);
+    List<Book> getBooksByCount(@Valid
+                               @RequestParam(value = "max", required = false, defaultValue = "${default.books.count}")
+                               @NumberFormat(style = NumberFormat.Style.NUMBER)
+                                       Long booksCount) throws NotFoundException {
+        return bookService.getBooksByCount(booksCount);
     }
 
     @GetMapping("/books/{id}")
     Book getBookById(@Valid @PathVariable("id")
                      @NumberFormat(style = NumberFormat.Style.NUMBER) Long id)
             throws NotFoundException {
-        return bibliotecaService.getBookById(id);
+        return bookService.getBookById(id);
     }
 
     @GetMapping("/movies")
@@ -38,28 +43,37 @@ class BibliotecaController {
                                  @RequestParam(value = "max", required = false, defaultValue = "${default.movies.count}")
                                  @NumberFormat(style = NumberFormat.Style.NUMBER)
                                          Long movieCount) throws NotFoundException {
-        return bibliotecaService.getMoviesByCount(movieCount);
+        return movieService.getMoviesByCount(movieCount);
     }
 
     @GetMapping("/movies/{id}")
     Movie getMovieById(@Valid @PathVariable("id")
                        @NumberFormat(style = NumberFormat.Style.NUMBER)
                                Long id) throws NotFoundException {
-        return bibliotecaService.getMovieById(id);
+        return movieService.getMovieById(id);
     }
 
     @PatchMapping("/books/{id}/checkout")
     Messages updateCheckoutStatus(@Valid @PathVariable("id")
                                   @NumberFormat(style = NumberFormat.Style.NUMBER)
                                           Long id) throws NotFoundException {
-        return bibliotecaService.checkout(id);
+        return bookService.checkout(id);
     }
 
     @PatchMapping("/books/{id}/checkin")
     Messages updateReturnStatus(@Valid @PathVariable("id")
                                 @NumberFormat(style = NumberFormat.Style.NUMBER)
                                         Long id) throws NotFoundException {
-        return bibliotecaService.returnBook(id);
+        return bookService.returnBook(id);
     }
 
+    @PostMapping("/movies/{id}/operations")
+    Messages performMovieOperations(@Valid
+                           @PathVariable("id")
+                           @NumberFormat(style = NumberFormat.Style.NUMBER)
+                                   Long id,
+                           @RequestBody
+                                   MovieOperations operations) throws NotFoundException {
+        return movieService.performOperations(id, operations);
+    }
 }
