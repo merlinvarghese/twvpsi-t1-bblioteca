@@ -6,6 +6,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
 
+import static com.example.biblioteca.MovieService.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -13,6 +14,9 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 class MovieServiceTest {
     @Autowired
     private MovieRepository movieRepository;
+
+    @Autowired
+    private MovieOperationsRepository movieOperationsRepository;
 
     @Autowired
     private MovieService movieService;
@@ -80,5 +84,76 @@ class MovieServiceTest {
     void expectNoMovieFoundForANonExistentMovieId() {
         long nonExistentMovieId = 200L;
         assertThrows(NotFoundException.class, () -> movieService.getMovieById(nonExistentMovieId));
+    }
+
+    @Test
+    void expectSuccessfulCheckoutOfMovie() throws NotFoundException {
+        movieRepository.deleteAll();
+        movieOperationsRepository.deleteAll();
+        Movie movie = new Movie((long) 1,
+                "Harry potter",
+                "2003",
+                "Chris Columbus",
+                "8");
+        Movie savedMovie = movieRepository.save(movie);
+        MovieOperations movieOperation = new MovieOperations("CHECKOUT");
+
+        Messages outputMsg = movieService.performOperations(savedMovie.getId(), movieOperation);
+
+        assertEquals(MOVIE_CHECKOUT_SUCCESS, outputMsg.getMessage());
+    }
+
+    @Test
+    void expectFailToCheckoutOfMovieWhichIsAlreadyCheckedOut() throws NotFoundException {
+        movieRepository.deleteAll();
+        movieOperationsRepository.deleteAll();
+        Movie movie = new Movie((long) 1,
+                "Harry potter",
+                "2003",
+                "Chris Columbus",
+                "8");
+        Movie savedMovie = movieRepository.save(movie);
+        MovieOperations movieOperation = new MovieOperations("CHECKOUT");
+        movieService.performOperations(savedMovie.getId(), movieOperation);
+
+        Messages outputMsg = movieService.performOperations(savedMovie.getId(), movieOperation);
+
+        assertEquals(MOVIE_CHECKOUT_FAIL, outputMsg.getMessage());
+    }
+
+    @Test
+    void expectSuccessfulReturnOfMovie() throws NotFoundException {
+        movieRepository.deleteAll();
+        movieOperationsRepository.deleteAll();
+        Movie movie = new Movie((long) 1,
+                "Harry potter",
+                "2003",
+                "Chris Columbus",
+                "8");
+        Movie savedMovie = movieRepository.save(movie);
+        MovieOperations checkoutOp = new MovieOperations("CHECKOUT");
+        movieService.performOperations(savedMovie.getId(), checkoutOp);
+        MovieOperations returnOp = new MovieOperations("RETURN");
+
+        Messages outputMsg = movieService.performOperations(savedMovie.getId(), returnOp);
+
+        assertEquals(MOVIE_RETURN_SUCCESS, outputMsg.getMessage());
+    }
+
+    @Test
+    void expectReturnFailsOfAnAvailableMovie() throws NotFoundException {
+        movieRepository.deleteAll();
+        movieOperationsRepository.deleteAll();
+        Movie movie = new Movie((long) 3,
+                "Harry potter",
+                "2003",
+                "Chris Columbus",
+                "8");
+        Movie savedMovie = movieRepository.save(movie);
+        MovieOperations returnOp = new MovieOperations("RETURN");
+
+        Messages outputMsg = movieService.performOperations(savedMovie.getId(), returnOp);
+
+        assertEquals(MOVIE_RETURN_FAIL, outputMsg.getMessage());
     }
 }

@@ -14,10 +14,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import static com.example.biblioteca.MovieService.MOVIE_CHECKOUT_SUCCESS;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SuppressWarnings("unused")
@@ -141,7 +141,7 @@ class BibliotecaControllerTest {
     }
 
     @Nested
-    class MovieTest {
+    class MovieTests {
         @Test
         void expectEmptyListWhenNoMoviesAreAvailable() throws Exception {
             long defaultNumberOfMovies = 2L;
