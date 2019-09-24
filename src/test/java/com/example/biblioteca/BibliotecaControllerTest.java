@@ -81,7 +81,7 @@ class BibliotecaControllerTest {
 
             mockMvc.perform(get("/books"))
                     .andExpect(status().isOk())
-                    .andExpect(jsonPath("$", hasSize(0)));
+                    .andExpect(jsonPath("$.data").isEmpty());
 
             verify(bibliotecaService).getBooksByCount(defaultNumberOfBooks);
         }
@@ -102,12 +102,7 @@ class BibliotecaControllerTest {
 
             mockMvc.perform(get("/books?max=1"))
                     .andExpect(status().isOk())
-                    .andExpect(content().json("[{\"isbn\":\"375704965\"," +
-                            "\"title\":\"Harry Potter\"," +
-                            "\"author\":\"JK Rowling\"," +
-                            "\"published_year\":\"1990\"," +
-                            "\"publisher\":\"Vintage Books USA\"}]"));
-
+                    .andExpect(jsonPath("$.data").isArray());
             verify(bibliotecaService).getBooksByCount(1);
         }
 
@@ -126,7 +121,7 @@ class BibliotecaControllerTest {
 
             mockMvc.perform(get("/books"))
                     .andExpect(status().isOk())
-                    .andExpect(jsonPath("$", hasSize(1)));
+                    .andExpect(jsonPath("$.data").isArray());
 
             verify(bibliotecaService, atLeastOnce()).getBooksByCount(5);
         }

@@ -26,11 +26,12 @@ class BibliotecaController {
     }
 
     @GetMapping("/books")
-    @ApiOperation(value = "Get Books Listing for a Given Limit", response = List.class, tags = "List Books",
+    @ApiOperation(value = "Get Books Listing for a Given Limit", response = Response.class, tags = "List Books",
             notes="A User can Browse through the list of books.\n ")
-    List<Book> getBooksByCount(@ApiParam("Maximum Listing of Books, if max not provided: Default Value = 5 ") @Valid @RequestParam(value = "max", required = false, defaultValue = "${default.books.count}")
+    Response getBooksByCount(@ApiParam("Maximum Listing of Books, if max not provided: Default Value = 5 ") @Valid @RequestParam(value = "max", required = false, defaultValue = "${default.books.count}")
                                @NumberFormat(style = NumberFormat.Style.NUMBER) Long booksCount) throws NotFoundException {
-        return bibliotecaService.getBooksByCount(booksCount);
+        List<Book> bookList = bibliotecaService.getBooksByCount(booksCount);
+        return new Response("true", "Book Listing Successful", bookList);
     }
 
     @GetMapping("/books/{id}")
