@@ -29,6 +29,8 @@ public class Movie {
   @JsonProperty
   private final String rating;
 
+
+
   public Movie() {
     this.id = null;
     this.name = null;
@@ -36,6 +38,7 @@ public class Movie {
     this.director = null;
     this.rating = null;
   }
+
 
   @JsonIgnore
   Long getId() {
@@ -72,4 +75,5 @@ public class Movie {
   public int hashCode() {
     return Objects.hash(id);
   }
+
 }

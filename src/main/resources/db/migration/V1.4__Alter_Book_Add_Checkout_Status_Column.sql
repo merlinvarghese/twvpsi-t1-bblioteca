@@ -1,1 +1,0 @@
-alter table book add checkout_status varchar(20);

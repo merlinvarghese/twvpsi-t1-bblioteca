@@ -219,13 +219,13 @@ class BibliotecaControllerTest {
         String checkout_message = "Thank you! Enjoy the book.";
         Messages message = new Messages();
         message.setMessage(checkout_message);
-        when(bibliotecaService.checkout(any(Long.class))).thenReturn(message);
+        when(bibliotecaService.checkOutBook(any(Long.class))).thenReturn(message);
 
         mockMvc.perform(patch("/books/1/checkout"))
                 .andExpect(status().isOk())
                 .andExpect(content().string("{\"message\":\"Thank you! Enjoy the book.\"}"));
 
-        verify(bibliotecaService).checkout(1L);
+        verify(bibliotecaService).checkOutBook(1L);
     }
 
     @Test
@@ -233,13 +233,13 @@ class BibliotecaControllerTest {
         String checkout_message = "That book is not available.";
         Messages message = new Messages();
         message.setMessage(checkout_message);
-        when(bibliotecaService.checkout(any(Long.class))).thenReturn(message);
+        when(bibliotecaService.checkOutBook(any(Long.class))).thenReturn(message);
 
         mockMvc.perform(patch("/books/1/checkout"))
                 .andExpect(status().isOk())
                 .andExpect(content().string("{\"message\":\"That book is not available.\"}"));
 
-        verify(bibliotecaService).checkout(1L);
+        verify(bibliotecaService).checkOutBook(1L);
     }
 
     @Test

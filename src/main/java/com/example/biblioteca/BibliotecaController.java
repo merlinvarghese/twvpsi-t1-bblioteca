@@ -1,5 +1,6 @@
 package com.example.biblioteca;
 
+import apple.laf.JRSUIConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.NumberFormat;
 import org.springframework.validation.annotation.Validated;
@@ -48,17 +49,41 @@ class BibliotecaController {
         return bibliotecaService.getMovieById(id);
     }
 
-    @PatchMapping("/books/{id}/checkout")
-    Messages updateCheckoutStatus(@Valid @PathVariable("id")
+    @PatchMapping("/books/{id}/operations")
+    Messages checkOutBook(@Valid @PathVariable("id")
                                   @NumberFormat(style = NumberFormat.Style.NUMBER)
-                                          Long id) throws NotFoundException {
-        return bibliotecaService.checkout(id);
+                                          Long id, @RequestBody Operations type) throws NotFoundException {
+
+        if(type.getType().equals("CHECKEDOUT"))
+        return bibliotecaService.checkOutBook(id);
+        else if(type.getType().equals("RETURN"))
+        return bibliotecaService.returnBook(id);
+        else{
+            return new Messages("Invalid operation");
+        }
+
     }
 
     @PatchMapping("/books/{id}/checkin")
-    Messages updateReturnStatus(@Valid @PathVariable("id")
+    Messages checkInBook(@Valid @PathVariable("id")
                                 @NumberFormat(style = NumberFormat.Style.NUMBER)
                                         Long id) throws NotFoundException {
         return bibliotecaService.returnBook(id);
     }
+
+//    @PatchMapping("/movies/{id}")
+//    Messages moviecheckInOut(@Valid @PathVariable("id")
+//                                  @NumberFormat(style = NumberFormat.Style.NUMBER)
+//                                          Long id, @RequestBody Operations type) throws NotFoundException {
+//
+//        Messages message = new Messages();
+//        if(type.getType().equals("checkin"))
+//            message = bibliotecaService.checkInMovie(id);
+//        else if(type.getType().equals("checkout"))
+//            message = bibliotecaService.checkOutMovie(id);
+//        else
+//            message.setMessage("Invalid operation type");
+//        return message;
+//    }
+
 }

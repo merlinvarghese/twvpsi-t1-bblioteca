@@ -2,15 +2,27 @@ package com.example.biblioteca;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.springframework.beans.factory.annotation.Autowired;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
 class Book {
+
+    private  final String CHECKOUT_SUCCESS = "Thank you! Enjoy the book.";
+    private  final String CHECKOUT_FAILURE = "That book is not available.";
+    private  final String CHECKIN_SUCCESS = "Thank you for returning the book.";
+    private  final String CHECKIN_FAILURE = "That is not a valid book to return.";
+
+    @Autowired
+    private BookRepository bookRepository;
+
+    @Autowired
+    private BookOperationsRepository bookOperationsRepository;
+
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @JsonProperty
@@ -36,8 +48,10 @@ class Book {
     @JsonProperty
     private final String publisher;
 
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    private String checkout_status;
+    @JsonIgnore
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "id")
+    private List<BookOperations> operations;
+
 
     @SuppressWarnings("unused")
     Book() {
@@ -47,7 +61,6 @@ class Book {
         this.author = null;
         this.published_year = null;
         this.publisher = null;
-        this.checkout_status = null;
     }
 
     Book(Long id, String isbn, String title, String author
@@ -58,7 +71,6 @@ class Book {
         this.author = author;
         this.published_year = published_year;
         this.publisher = publisher;
-        this.checkout_status = checkout_status;
     }
 
     @Override
@@ -84,32 +96,34 @@ class Book {
         return Objects.hash(id);
     }
 
-    boolean checkOut() {
-        if (checkout_status.equals("CHECKEDOUT")) {
-            return false;
+    Messages checkOut() {
+        Messages message = new Messages();
+        Long lastBookOperationId = bookOperationsRepository.getLastBookOperationId(this.id);
+        if(lastBookOperationId!=null)
+        {
+            BookOperations bookOperations = bookOperationsRepository.findById(lastBookOperationId).get();
+            if(bookOperations.getStatus().equals("CHECKEOUT"))
+            {
+                message.setMessage(CHECKOUT_FAILURE);
+                return message;
+            }
         }
-        setCheckout_status("CHECKEDOUT");
-        return true;
+
+        //BookOperations bookOperations = new BookOperations(this, )
+
+        return message;
     }
 
-    boolean checkIn() {
-        if (checkout_status.equals("AVAILABLE")) {
-            return false;
-        }
-        setCheckout_status("AVAILABLE");
-        return true;
-    }
+    Messages checkIn() {
 
-    void setCheckout_status(String checkout_status) {
-        this.checkout_status = checkout_status;
-    }
 
-    String getCheckout_status() {
-        return checkout_status;
+        return new Messages();
     }
 
     @JsonIgnore
     Long getId() {
         return id;
     }
+
+
 }

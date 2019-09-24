@@ -24,7 +24,8 @@ class BibliotecaService {
 
     private List<Book> getAllBooks() {
         List<Book> books = (List<Book>) bookRepository.findAll();
-        return books.stream().filter(book -> book.getCheckout_status().equals("AVAILABLE")).collect(Collectors.toList());
+        //return books.stream().filter(book -> book.getCheckout_status().equals("AVAILABLE")).collect(Collectors.toList());
+        return books;
     }
 
     List<Book> getBooksByCount(long count) throws NotFoundException {
@@ -39,34 +40,26 @@ class BibliotecaService {
         return resultBooks;
     }
 
-    Messages checkout(Long id) throws NotFoundException {
+    Messages checkOutBook(Long id) throws NotFoundException {
         Messages message = new Messages();
         Book book = getBookById(id);
-        boolean checkoutSuccess = book.checkOut();
-        if (checkoutSuccess) {
-            bookRepository.save(book);
-            message.setMessage("Thank you! Enjoy the book.");
-        } else {
-            message.setMessage("That book is not available.");
-        }
+        Messages checkoutSuccess = book.checkOut();
+
         return message;
     }
 
     Messages returnBook(Long id) throws NotFoundException {
         Messages message = new Messages();
         Book book = getBookById(id);
-        boolean checkInSuccess = book.checkIn();
-        if (checkInSuccess) {
-            bookRepository.save(book);
-            message.setMessage("Thank you for returning the book.");
-        } else {
-            message.setMessage("That is not a valid book to return.");
-        }
+        Messages checkInSuccess = book.checkIn();
+
         return message;
     }
 
     private List<Movie> getAllMovies() {
-        return (List<Movie>) movieRepository.findAll();
+        List<Movie> movies = (List<Movie>) movieRepository.findAll();
+       // return movies.stream().filter(movie -> movie.getCheckout_status().equals("AVAILABLE")).collect(Collectors.toList());
+        return movies;
     }
 
     List<Movie> getMoviesByCount(long count) throws NotFoundException {
@@ -85,4 +78,30 @@ class BibliotecaService {
     Movie getMovieById(Long id) throws NotFoundException {
         return movieRepository.findById(id).orElseThrow(() -> new NotFoundException("No Movie found"));
     }
+
+//    Messages checkOutMovie(Long id) throws NotFoundException {
+//        Messages message = new Messages();
+//        Movie movie = getMovieById(id);
+//        boolean checkoutSuccess = movie.checkOut();
+//        if (checkoutSuccess) {
+//            movieRepository.save(movie);
+//            message.setMessage("Thank you! Enjoy the movie.");
+//        } else {
+//            message.setMessage("That movie is not available.");
+//        }
+//        return message;
+//    }
+//
+//    Messages checkInMovie(Long id) throws NotFoundException {
+//        Messages message = new Messages();
+//        Movie movie = getMovieById(id);
+//        boolean checkInSuccess = movie.checkIn();
+//        if (checkInSuccess) {
+//            movieRepository.save(movie);
+//            message.setMessage("Thank you for returning the movie.");
+//        } else {
+//            message.setMessage("That is not a valid movie to return.");
+//        }
+//        return message;
+//    }
 }

@@ -72,7 +72,7 @@ class BibliotecaServiceTest {
     void expectDefaultNumberOfMoviesList() throws NotFoundException {
         int defaultNumberOfMovies = 1;
         movieRepository.deleteAll();
-        Movie movie1 = new Movie(1,
+        Movie movie1 = new Movie(  1,
                 "Harry potter",
                 "2003",
                 "Chris Columbus", "8");
@@ -201,7 +201,7 @@ class BibliotecaServiceTest {
                 "1990",
                 "Vintage Books USA","AVAILABLE");
         Book savedBook = bookRepository.save(book);
-        Messages message = bibliotecaService.checkout(savedBook.getId());
+        Messages message = bibliotecaService.checkOutBook(savedBook.getId());
 
         assertEquals(expectedMessage, message.getMessage());
     }
@@ -217,7 +217,7 @@ class BibliotecaServiceTest {
                 "1990",
                 "Vintage Books USA","CHECKEDOUT");
         Book savedBook = bookRepository.save(book);
-        Messages message = bibliotecaService.checkout(savedBook.getId());
+        Messages message = bibliotecaService.checkOutBook(savedBook.getId());
 
         assertEquals(expectedMessage, message.getMessage());
     }
@@ -240,6 +240,67 @@ class BibliotecaServiceTest {
 
     @Test
     void expectFailsToCheckInWhenBookNotCheckedOut() throws NotFoundException {
+        String expectedMessage = "That is not a valid book to return.";
+        bookRepository.deleteAll();
+        Book book = new Book((long) 1,
+                "375704965",
+                "Harry Potter",
+                "JK Rowling",
+                "1990",
+                "Vintage Books USA","AVAILABLE");
+        Book savedBook = bookRepository.save(book);
+        Messages message = bibliotecaService.returnBook(savedBook.getId());
+
+        assertEquals(expectedMessage, message.getMessage());
+    }
+    @Test
+    void expectSuccessfulMovieCheckout() throws NotFoundException {
+        String expectedMessage = "Thank you! Enjoy the book.";
+        movieRepository.deleteAll();
+        Movie movie = new Movie((long) 1,
+                "Harry potter",
+                "2003",
+                "Chris Columbus", "8");
+        Movie savedMovie = movieRepository.save(movie);
+        Messages message = bibliotecaService.checkOutBook(savedMovie.getId());
+
+        assertEquals(expectedMessage, message.getMessage());
+    }
+
+    @Test
+    void expectFailsToCheckoutWhenMovieNotAvailable() throws NotFoundException {
+        String expectedMessage = "That book is not available.";
+        bookRepository.deleteAll();
+        Book book = new Book((long) 1,
+                "375704965",
+                "Harry Potter",
+                "JK Rowling",
+                "1990",
+                "Vintage Books USA","CHECKEDOUT");
+        Book savedBook = bookRepository.save(book);
+        Messages message = bibliotecaService.checkOutBook(savedBook.getId());
+
+        assertEquals(expectedMessage, message.getMessage());
+    }
+
+    @Test
+    void expectSuccessfulMovieCheckIn() throws NotFoundException {
+        String expectedMessage = "Thank you for returning the book.";
+        bookRepository.deleteAll();
+        Book book = new Book((long) 1,
+                "375704965",
+                "Harry Potter",
+                "JK Rowling",
+                "1990",
+                "Vintage Books USA","CHECKEDOUT");
+        Book savedBook = bookRepository.save(book);
+        Messages message = bibliotecaService.returnBook(savedBook.getId());
+
+        assertEquals(expectedMessage, message.getMessage());
+    }
+
+    @Test
+    void expectFailsToCheckInWhenMovieNotCheckedOut() throws NotFoundException {
         String expectedMessage = "That is not a valid book to return.";
         bookRepository.deleteAll();
         Book book = new Book((long) 1,

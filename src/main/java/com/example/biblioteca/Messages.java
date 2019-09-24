@@ -6,6 +6,14 @@ class Messages {
     @JsonProperty
     String message;
 
+    public Messages(String message) {
+        this.message = message;
+    }
+
+    public Messages() {
+
+    }
+
     String getMessage() {
         return message;
     }
