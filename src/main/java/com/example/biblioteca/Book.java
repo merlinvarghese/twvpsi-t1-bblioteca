@@ -52,7 +52,7 @@ class Book {
     }
 
     Book(Long id, String isbn, String title, String author
-            , String published_year, String publisher, String checkout_status) {
+            , String published_year, String publisher) {
         this.id = id;
         this.isbn = isbn;
         this.title = title;
@@ -90,7 +90,7 @@ class Book {
         operations.add(bookOperations);
     }
 
-    void returnMovie(BookOperations movieOperation) {
+    void returnBook(BookOperations movieOperation) {
         movieOperation.processCheckIn(this);
         operations.add(movieOperation);
     }

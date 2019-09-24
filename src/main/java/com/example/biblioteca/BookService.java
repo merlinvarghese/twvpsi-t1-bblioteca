@@ -1,6 +1,5 @@
 package com.example.biblioteca;
 
-import org.aspectj.bridge.Message;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -79,7 +78,7 @@ class BookService {
     private Messages performReturn(Long bookId) throws NotFoundException {
         Book book = getBookById(bookId);
         BookOperations bookOperations = new BookOperations();
-        book.returnMovie(bookOperations);
+        book.returnBook(bookOperations);
         bookRepository.save(book);
         Messages message = new Messages();
         message.setMessage(RETURN_SUCCESS);

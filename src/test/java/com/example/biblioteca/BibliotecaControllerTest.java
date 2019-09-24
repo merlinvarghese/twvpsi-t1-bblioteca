@@ -48,8 +48,7 @@ class BibliotecaControllerTest {
         void expectBookDetailsForGivenBookId() throws Exception {
             when(bookService.getBookById(1L)).thenReturn(
                     (new Book(1L, "375704965", "A Judgement in Stone",
-                            "Ruth Rendell", "2000", "Vintage Books USA",
-                            "AVAILABLE")));
+                            "Ruth Rendell", "2000", "Vintage Books USA")));
 
             mockMvc.perform(get("/books/{id}", 1)
                     .accept(MediaType.APPLICATION_JSON))
@@ -93,8 +92,7 @@ class BibliotecaControllerTest {
                             "Harry Potter",
                             "JK Rowling",
                             "1990",
-                            "Vintage Books USA",
-                            "AVAILABLE"
+                            "Vintage Books USA"
                     )
             );
             when(bookService.getBooksByCount(1)).thenReturn(books);
@@ -118,8 +116,7 @@ class BibliotecaControllerTest {
                             "Harry Potter",
                             "JK Rowling",
                             "1990",
-                            "Vintage Books USA",
-                            "AVAILABLE")
+                            "Vintage Books USA")
             );
             when(bookService.getBooksByCount(5)).thenReturn(books);
 
@@ -236,60 +233,72 @@ class BibliotecaControllerTest {
         @WithMockUser
         void expectSuccessFulBookCheckOut() throws Exception {
             String checkout_message = "Thank you! Enjoy the book.";
+            BookOperations operations = new BookOperations();
+            operations.setType("CHECKOUT");
             Messages message = new Messages();
             message.setMessage(checkout_message);
-            when(bookService.checkout(any(Long.class), operations)).thenReturn(message);
+            when(bookService.performOperations(any(Long.class), any(BookOperations.class))).thenReturn(message);
 
-            mockMvc.perform(patch("/books/1/checkout"))
-                    .andExpect(status().isOk())
-                    .andExpect(content().string("{\"message\":\"Thank you! Enjoy the book.\"}"));
+            mockMvc.perform(post("/books/1/operations")
+                    .content("{\"type\":\"CHECKOUT\"}").contentType(MediaType.APPLICATION_JSON))
+                    .andExpect(status().isOk());
 
-            verify(bookService, atLeastOnce()).checkout(1L, operations);
+
+            verify(bookService, atLeastOnce()).performOperations(any(Long.class), any(BookOperations.class));
         }
 
         @Test
         @WithMockUser
         void expectFailsToCheckoutWhenBookNotAvailable() throws Exception {
             String checkout_message = "That book is not available.";
+            BookOperations operations = new BookOperations();
+            operations.setType("CHECKOUT");
             Messages message = new Messages();
             message.setMessage(checkout_message);
-            when(bookService.checkout(any(Long.class), operations)).thenReturn(message);
+            when(bookService.performOperations(any(Long.class), any(BookOperations.class))).thenReturn(message);
 
-            mockMvc.perform(patch("/books/1/checkout"))
+            mockMvc.perform(post("/books/1/operations")
+                    .content("{\"type\":\"CHECKOUT\"}").contentType(MediaType.APPLICATION_JSON))
                     .andExpect(status().isOk())
                     .andExpect(content().string("{\"message\":\"That book is not available.\"}"));
 
-            verify(bookService, atLeastOnce()).checkout(1L, operations);
+            verify(bookService, atLeastOnce()).performOperations(any(Long.class), any(BookOperations.class));
         }
 
         @Test
         @WithMockUser
         void expectSuccessfulBookCheckIn() throws Exception {
             String checkin_message = "Thank you for returning the book.";
+            BookOperations operations = new BookOperations();
+            operations.setType("RETURN");
             Messages message = new Messages();
             message.setMessage(checkin_message);
-            when(bookService.returnBook(any(Long.class), operations)).thenReturn(message);
+            when(bookService.performOperations(any(Long.class), any(BookOperations.class))).thenReturn(message);
 
-            mockMvc.perform(patch("/books/1/checkin"))
+            mockMvc.perform(post("/books/1/operations")
+                    .content("{\"type\":\"CHECKIN\"}").contentType(MediaType.APPLICATION_JSON))
                     .andExpect(status().isOk())
                     .andExpect(content().string("{\"message\":\"Thank you for returning the book.\"}"));
 
-            verify(bookService, atLeastOnce()).returnBook(1L, operations);
+            verify(bookService, atLeastOnce()).performOperations(any(Long.class), any(BookOperations.class));
         }
 
         @Test
         @WithMockUser
         void expectFailsToCheckInWhenBookNotCheckedOut() throws Exception {
             String checkin_message = "That is not a valid book to return.";
+            BookOperations operations = new BookOperations();
+            operations.setType("RETURN");
             Messages message = new Messages();
             message.setMessage(checkin_message);
-            when(bookService.returnBook(any(Long.class), operations)).thenReturn(message);
+            when(bookService.performOperations(any(Long.class), any(BookOperations.class))).thenReturn(message);
 
-            mockMvc.perform(patch("/books/1/checkin"))
+            mockMvc.perform(post("/books/1/operations")
+                    .content("{\"type\":\"CHECKOUT\"}").contentType(MediaType.APPLICATION_JSON))
                     .andExpect(status().isOk())
                     .andExpect(content().string("{\"message\":\"That is not a valid book to return.\"}"));
 
-            verify(bookService, atLeastOnce()).returnBook(1L, operations);
+            verify(bookService, atLeastOnce()).performOperations(any(Long.class), any(BookOperations.class));
         }
     }
 }

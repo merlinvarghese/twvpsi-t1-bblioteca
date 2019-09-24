@@ -52,7 +52,7 @@ public class BookOperations {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        MovieOperations that = (MovieOperations) o;
+        BookOperations that = (BookOperations) o;
         return id.equals(that.id);
     }
 
