@@ -69,10 +69,13 @@ class BibliotecaController {
     @ApiOperation(value = "Checkout the Book given the BookId", response = Messages.class, tags = "Checkout Book")
     Messages performBookOperations(@Valid @PathVariable("id")
                                   @NumberFormat(style = NumberFormat.Style.NUMBER)
+
                                           Long id,
                                   @RequestBody
                                           BookOperations operations) throws NotFoundException {
         return bookService.performOperations(id,operations);
+
+
     }
 
     @PostMapping("/movies/{id}/operations")
