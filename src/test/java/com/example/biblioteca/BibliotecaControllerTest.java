@@ -143,7 +143,7 @@ class BibliotecaControllerTest {
     }
 
     @Nested
-    class MovieTest {
+    class MovieTests {
         @Test
         void expectEmptyListWhenNoMoviesAreAvailable() throws Exception {
             long defaultNumberOfMovies = 2L;
