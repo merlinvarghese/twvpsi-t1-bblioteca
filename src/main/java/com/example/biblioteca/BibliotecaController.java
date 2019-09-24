@@ -44,20 +44,22 @@ class BibliotecaController {
     }
 
     @GetMapping("/movies")
-    @ApiOperation(value = "Get Movie Listing For a Given Limit", response = List.class, tags = "List Movies")
-    List<Movie> getMoviesByCount(@Valid
+    @ApiOperation(value = "Get Movie Listing For a Given Limit", response = Response.class, tags = "List Movies")
+    Response getMoviesByCount(@Valid
                                  @RequestParam(value = "max", required = false, defaultValue = "${default.movies.count}")
                                  @NumberFormat(style = NumberFormat.Style.NUMBER)
                                          Long movieCount) throws NotFoundException {
-        return bibliotecaService.getMoviesByCount(movieCount);
+        List<Movie> movieList =  bibliotecaService.getMoviesByCount(movieCount);
+        return new Response("true", "Movie Listing", movieList);
     }
 
     @GetMapping("/movies/{id}")
-    @ApiOperation(value = "Get Movie Details for a specific Movie Id", response = Movie.class, tags = "Movie Details")
-    Movie getMovieById(@Valid @PathVariable("id")
+    @ApiOperation(value = "Get Movie Details for a specific Movie Id", response = Response.class, tags = "Movie Details")
+    Response getMovieById(@Valid @PathVariable("id")
                        @NumberFormat(style = NumberFormat.Style.NUMBER)
                                Long id) throws NotFoundException {
-        return bibliotecaService.getMovieById(id);
+        Movie movie = bibliotecaService.getMovieById(id);
+        return new Response("true", "Movie Details " + id + " successfull", movie);
     }
 
     @PatchMapping("/books/{id}/checkout")

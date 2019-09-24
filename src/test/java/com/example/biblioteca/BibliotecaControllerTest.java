@@ -146,7 +146,7 @@ class BibliotecaControllerTest {
 
             mockMvc.perform(get("/movies?max=2"))
                     .andExpect(status().isOk())
-                    .andExpect(jsonPath("$", hasSize(0)));
+                    .andExpect(jsonPath("$.data").isEmpty());
 
             verify(bibliotecaService).getMoviesByCount(defaultNumberOfMovies);
         }
@@ -162,10 +162,7 @@ class BibliotecaControllerTest {
 
             mockMvc.perform(get("/movies?max=1"))
                     .andExpect(status().isOk())
-                    .andExpect(content().json("[{\"name\":\"Harry potter\"," +
-                            "\"year\":\"2003\"," +
-                            "\"director\":\"Chris Columbus\"," +
-                            "\"rating\":\"8\"}]"));
+                    .andExpect(jsonPath("$.data").isArray());
 
             verify(bibliotecaService).getMoviesByCount(1);
         }
@@ -181,7 +178,7 @@ class BibliotecaControllerTest {
 
             mockMvc.perform(get("/movies"))
                     .andExpect(status().isOk())
-                    .andExpect(jsonPath("$", hasSize(1)));
+                    .andExpect(jsonPath("$.data").isArray());
 
             verify(bibliotecaService).getMoviesByCount(5);
         }
@@ -205,10 +202,7 @@ class BibliotecaControllerTest {
             mockMvc.perform(get("/movies/{id}", 1L)
                     .accept(MediaType.APPLICATION_JSON))
                     .andExpect(status().isOk())
-                    .andExpect(content().json("{\"name\":\"Harry potter\",\"year\":\"2003\",\"director\":\"Chris Columbus\"," +
-                            "\"rating\":\"8\"}"
-                    ))
-            ;
+                    .andExpect(jsonPath("$.success").value("true"));
 
             verify(bibliotecaService).getMovieById(1L);
         }
