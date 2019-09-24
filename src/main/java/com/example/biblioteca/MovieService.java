@@ -53,7 +53,9 @@ public class MovieService {
         Long lastMovieOperationId = movieOperationsRepository.getLastOperationId(movieId);
         // No operation performed on Movie yet
         if (lastMovieOperationId == null) {
-            performReturn(movieId);
+            Messages message = new Messages();
+            message.setMessage(MOVIE_RETURN_FAIL);
+            return message;
         }
 
         MovieOperations lastMovieOperation = movieOperationsRepository.findById(lastMovieOperationId).get();
