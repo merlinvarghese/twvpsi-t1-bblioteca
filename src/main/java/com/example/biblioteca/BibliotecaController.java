@@ -14,6 +14,8 @@ import java.util.List;
 @Validated
 @RestController
 class BibliotecaController {
+    private final String welcome_Message = "Welcome to Biblioteca!";
+
     @Autowired
     private BookService bookService;
 
@@ -23,7 +25,7 @@ class BibliotecaController {
     @GetMapping("/")
     @ApiOperation(value = "Welcome", response = List.class, tags = "Greetings From Biblioteca")
     String greeting() {
-        return "Welcome to Biblioteca!";
+        return welcome_Message;
     }
 
     @GetMapping("/books")
