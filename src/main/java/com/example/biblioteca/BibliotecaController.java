@@ -59,20 +59,14 @@ class BibliotecaController {
         return movieService.getMovieById(id);
     }
 
-    @PatchMapping("/books/{id}/checkout")
+    @PostMapping("/books/{id}/operations")
     @ApiOperation(value = "Checkout the Book given the BookId", response = Messages.class, tags = "Checkout Book")
-    Messages updateCheckoutStatus(@Valid @PathVariable("id")
+    Messages performBookOperations(@Valid @PathVariable("id")
                                   @NumberFormat(style = NumberFormat.Style.NUMBER)
-                                          Long id) throws NotFoundException {
-        return bookService.checkout(id);
-    }
-
-    @PatchMapping("/books/{id}/checkin")
-    @ApiOperation(value = "Return the Book given the BookId", response = Movie.class, tags = "Return Book")
-    Messages updateReturnStatus(@Valid @PathVariable("id")
-                                @NumberFormat(style = NumberFormat.Style.NUMBER)
-                                        Long id) throws NotFoundException {
-        return bookService.returnBook(id);
+                                          Long id,
+                                  @RequestBody
+                                          BookOperations operations) throws NotFoundException {
+        return bookService.performOperations(id,operations);
     }
 
     @PostMapping("/movies/{id}/operations")

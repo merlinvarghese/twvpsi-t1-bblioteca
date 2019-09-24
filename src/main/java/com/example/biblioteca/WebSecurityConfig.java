@@ -19,7 +19,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .httpBasic()
                 .and()
                 .authorizeRequests()
-                .antMatchers(HttpMethod.PATCH, "/books/**")
+                .antMatchers(HttpMethod.POST, "/books/**")
                 .authenticated()
                 .and()
                 .authorizeRequests()

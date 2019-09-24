@@ -141,7 +141,7 @@ class BookServiceTest {
                 "1990",
                 "Vintage Books USA","AVAILABLE");
         Book savedBook = bookRepository.save(book);
-        Messages message = bookService.checkout(savedBook.getId());
+        Messages message = bookService.checkout(savedBook.getId(), operations);
 
         assertEquals(expectedMessage, message.getMessage());
     }
@@ -157,7 +157,7 @@ class BookServiceTest {
                 "1990",
                 "Vintage Books USA","CHECKEDOUT");
         Book savedBook = bookRepository.save(book);
-        Messages message = bookService.checkout(savedBook.getId());
+        Messages message = bookService.checkout(savedBook.getId(), operations);
 
         assertEquals(expectedMessage, message.getMessage());
     }
@@ -173,7 +173,7 @@ class BookServiceTest {
                 "1990",
                 "Vintage Books USA","CHECKEDOUT");
         Book savedBook = bookRepository.save(book);
-        Messages message = bookService.returnBook(savedBook.getId());
+        Messages message = bookService.returnBook(savedBook.getId(), operations);
 
         assertEquals(expectedMessage, message.getMessage());
     }
@@ -189,7 +189,7 @@ class BookServiceTest {
                 "1990",
                 "Vintage Books USA","AVAILABLE");
         Book savedBook = bookRepository.save(book);
-        Messages message = bookService.returnBook(savedBook.getId());
+        Messages message = bookService.returnBook(savedBook.getId(), operations);
 
         assertEquals(expectedMessage, message.getMessage());
     }

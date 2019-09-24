@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import static com.example.biblioteca.MovieService.MOVIE_CHECKOUT_SUCCESS;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -239,13 +238,13 @@ class BibliotecaControllerTest {
             String checkout_message = "Thank you! Enjoy the book.";
             Messages message = new Messages();
             message.setMessage(checkout_message);
-            when(bookService.checkout(any(Long.class))).thenReturn(message);
+            when(bookService.checkout(any(Long.class), operations)).thenReturn(message);
 
             mockMvc.perform(patch("/books/1/checkout"))
                     .andExpect(status().isOk())
                     .andExpect(content().string("{\"message\":\"Thank you! Enjoy the book.\"}"));
 
-            verify(bookService, atLeastOnce()).checkout(1L);
+            verify(bookService, atLeastOnce()).checkout(1L, operations);
         }
 
         @Test
@@ -254,13 +253,13 @@ class BibliotecaControllerTest {
             String checkout_message = "That book is not available.";
             Messages message = new Messages();
             message.setMessage(checkout_message);
-            when(bookService.checkout(any(Long.class))).thenReturn(message);
+            when(bookService.checkout(any(Long.class), operations)).thenReturn(message);
 
             mockMvc.perform(patch("/books/1/checkout"))
                     .andExpect(status().isOk())
                     .andExpect(content().string("{\"message\":\"That book is not available.\"}"));
 
-            verify(bookService, atLeastOnce()).checkout(1L);
+            verify(bookService, atLeastOnce()).checkout(1L, operations);
         }
 
         @Test
@@ -269,13 +268,13 @@ class BibliotecaControllerTest {
             String checkin_message = "Thank you for returning the book.";
             Messages message = new Messages();
             message.setMessage(checkin_message);
-            when(bookService.returnBook(any(Long.class))).thenReturn(message);
+            when(bookService.returnBook(any(Long.class), operations)).thenReturn(message);
 
             mockMvc.perform(patch("/books/1/checkin"))
                     .andExpect(status().isOk())
                     .andExpect(content().string("{\"message\":\"Thank you for returning the book.\"}"));
 
-            verify(bookService, atLeastOnce()).returnBook(1L);
+            verify(bookService, atLeastOnce()).returnBook(1L, operations);
         }
 
         @Test
@@ -284,13 +283,13 @@ class BibliotecaControllerTest {
             String checkin_message = "That is not a valid book to return.";
             Messages message = new Messages();
             message.setMessage(checkin_message);
-            when(bookService.returnBook(any(Long.class))).thenReturn(message);
+            when(bookService.returnBook(any(Long.class), operations)).thenReturn(message);
 
             mockMvc.perform(patch("/books/1/checkin"))
                     .andExpect(status().isOk())
                     .andExpect(content().string("{\"message\":\"That is not a valid book to return.\"}"));
 
-            verify(bookService, atLeastOnce()).returnBook(1L);
+            verify(bookService, atLeastOnce()).returnBook(1L, operations);
         }
     }
 }

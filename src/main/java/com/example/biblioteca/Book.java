@@ -5,10 +5,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -38,11 +36,9 @@ class Book {
     @JsonProperty
     private final String publisher;
 
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    private String checkout_status;
-
-    @JsonProperty
-    private String issued_to;
+    @JsonIgnore
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "book")
+    private List<BookOperations> operations;
 
     @SuppressWarnings("unused")
     Book() {
@@ -52,7 +48,7 @@ class Book {
         this.author = null;
         this.published_year = null;
         this.publisher = null;
-        this.checkout_status = null;
+        this.operations = null;
     }
 
     Book(Long id, String isbn, String title, String author
@@ -63,7 +59,7 @@ class Book {
         this.author = author;
         this.published_year = published_year;
         this.publisher = publisher;
-        this.checkout_status = checkout_status;
+        this.operations = null;
     }
 
     @Override
@@ -89,30 +85,14 @@ class Book {
         return Objects.hash(id);
     }
 
-    boolean checkOut() {
-        if (checkout_status.equals("CHECKEDOUT")) {
-            return false;
-        }
-        setCheckout_status("CHECKEDOUT");
-        updateIssuedToOnBook();
-        return true;
+    void checkOut(BookOperations bookOperations) {
+        bookOperations.processCheckOut(this);
+        operations.add(bookOperations);
     }
 
-    boolean checkIn() {
-        if (checkout_status.equals("AVAILABLE")) {
-            return false;
-        }
-        setCheckout_status("AVAILABLE");
-        setIssued_to("None");
-        return true;
-    }
-
-    void setCheckout_status(String checkout_status) {
-        this.checkout_status = checkout_status;
-    }
-
-    String getCheckout_status() {
-        return checkout_status;
+    void returnMovie(BookOperations movieOperation) {
+        movieOperation.processCheckIn(this);
+        operations.add(movieOperation);
     }
 
     @JsonIgnore
@@ -120,10 +100,6 @@ class Book {
         return id;
     }
 
-    private void updateIssuedToOnBook() {
-        String username = getUserNameFromSpringSecurity();
-        setIssued_to(username);
-    }
 
     private String getUserNameFromSpringSecurity() {
         String username = "";
@@ -136,7 +112,4 @@ class Book {
         return username;
     }
 
-    void setIssued_to(String issued_to) {
-        this.issued_to = issued_to;
-    }
 }
