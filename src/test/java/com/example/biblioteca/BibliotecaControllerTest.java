@@ -37,9 +37,12 @@ class BibliotecaControllerTest {
     class WelcomeScreenTest {
         @Test
         void expectWelcomeMessageOnBibliotecaInvocation() throws Exception {
+            Response response = new Response("true", "Welcome Message to logged in User Successfully", "Welcome to Biblioteca!");
+            String jsonString = "{\"success\":\"true\",\"message\":\"Welcome Message to logged in User Successfully\",\"data\":\"Welcome to Biblioteca!\"}";
+
             mockMvc.perform(get(""))
                     .andExpect(status().isOk())
-                    .andExpect(content().string("Welcome to Biblioteca!"));
+                    .andExpect(content().json(jsonString));
         }
     }
 
@@ -55,8 +58,7 @@ class BibliotecaControllerTest {
             mockMvc.perform(get("/books/{id}", 1)
                     .accept(MediaType.APPLICATION_JSON))
                     .andExpect(status().isOk())
-                    .andExpect(content().json("{\"isbn\":\"375704965\",\"title\":\"A Judgement in Stone\"" +
-                            ", \"author\":\"Ruth Rendell\",\"published_year\":\"2000\", \"publisher\":\"Vintage Books USA\"}"));
+                    .andExpect(jsonPath("$.success").value("true"));
 
             verify(bookService).getBookById(1L);
         }
@@ -81,7 +83,7 @@ class BibliotecaControllerTest {
 
             mockMvc.perform(get("/books"))
                     .andExpect(status().isOk())
-                    .andExpect(jsonPath("$", hasSize(0)));
+                    .andExpect(jsonPath("$.data").isEmpty());
 
             verify(bookService).getBooksByCount(defaultNumberOfBooks);
         }
@@ -102,11 +104,7 @@ class BibliotecaControllerTest {
 
             mockMvc.perform(get("/books?max=1"))
                     .andExpect(status().isOk())
-                    .andExpect(content().json("[{\"isbn\":\"375704965\"," +
-                            "\"title\":\"Harry Potter\"," +
-                            "\"author\":\"JK Rowling\"," +
-                            "\"published_year\":\"1990\"," +
-                            "\"publisher\":\"Vintage Books USA\"}]"));
+                    .andExpect(jsonPath("$.data").isArray());
 
             verify(bookService).getBooksByCount(1);
         }
@@ -126,7 +124,7 @@ class BibliotecaControllerTest {
 
             mockMvc.perform(get("/books"))
                     .andExpect(status().isOk())
-                    .andExpect(jsonPath("$", hasSize(1)));
+                    .andExpect(jsonPath("$.data").isArray());
 
             verify(bookService, atLeastOnce()).getBooksByCount(5);
         }
@@ -152,7 +150,7 @@ class BibliotecaControllerTest {
 
             mockMvc.perform(get("/movies?max=2"))
                     .andExpect(status().isOk())
-                    .andExpect(jsonPath("$", hasSize(0)));
+                    .andExpect(jsonPath("$.data").isEmpty());
 
             verify(movieService).getMoviesByCount(defaultNumberOfMovies);
         }
@@ -168,11 +166,7 @@ class BibliotecaControllerTest {
 
             mockMvc.perform(get("/movies?max=1"))
                     .andExpect(status().isOk())
-                    .andExpect(content().json("[{\"name\":\"Harry potter\"," +
-                            "\"year\":\"2003\"," +
-                            "\"director\":\"Chris Columbus\"," +
-                            "\"rating\":\"8\"}]"));
-
+                    .andExpect(jsonPath("$.data").isArray());
             verify(movieService).getMoviesByCount(1);
         }
 
@@ -187,7 +181,7 @@ class BibliotecaControllerTest {
 
             mockMvc.perform(get("/movies"))
                     .andExpect(status().isOk())
-                    .andExpect(jsonPath("$", hasSize(1)));
+                    .andExpect(jsonPath("$.data").isArray());
 
             verify(movieService).getMoviesByCount(5);
         }
@@ -211,10 +205,7 @@ class BibliotecaControllerTest {
             mockMvc.perform(get("/movies/{id}", 1L)
                     .accept(MediaType.APPLICATION_JSON))
                     .andExpect(status().isOk())
-                    .andExpect(content().json("{\"name\":\"Harry potter\",\"year\":\"2003\",\"director\":\"Chris Columbus\"," +
-                            "\"rating\":\"8\"}"
-                    ))
-            ;
+                    .andExpect(jsonPath("$.success").value("true"));
 
             verify(movieService).getMovieById(1L);
         }

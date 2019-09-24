@@ -23,42 +23,46 @@ class BibliotecaController {
     private MovieService movieService;
 
     @GetMapping("/")
-    @ApiOperation(value = "Welcome", response = List.class, tags = "Greetings From Biblioteca")
-    String greeting() {
-        return welcome_Message;
+    @ApiOperation(value = "Welcome", response = Response.class, tags = "Greetings From Biblioteca")
+    Response greeting() {
+        return new Response("true", "Welcome Message to logged in User Successfully", welcome_Message);
     }
 
     @GetMapping("/books")
     @ApiOperation(value = "Get Books Listing for a Given Limit", response = List.class, tags = "List Books",
             notes="A User can Browse through the list of books.\n ")
-    List<Book> getBooksByCount(@ApiParam("Maximum Listing of Books, if max not provided: Default Value = 5 ") @Valid @RequestParam(value = "max", required = false, defaultValue = "${default.books.count}")
+    Response getBooksByCount(@ApiParam("Maximum Listing of Books, if max not provided: Default Value = 5 ") @Valid @RequestParam(value = "max", required = false, defaultValue = "${default.books.count}")
                                @NumberFormat(style = NumberFormat.Style.NUMBER) Long booksCount) throws NotFoundException {
-        return bookService.getBooksByCount(booksCount);
+        List<Book> listBook = bookService.getBooksByCount(booksCount);
+        return new Response("true", "Book Listing Successful", listBook);
     }
 
     @GetMapping("/books/{id}")
-    @ApiOperation(value = "Get Specific Book for a given Book Id", response = Book.class, tags = "Book Details")
-    Book getBookById(@Valid @PathVariable("id")
+    @ApiOperation(value = "Get Specific Book for a given Book Id", response = Response.class, tags = "Book Details")
+    Response getBookById(@Valid @PathVariable("id")
                      @NumberFormat(style = NumberFormat.Style.NUMBER) Long id)
             throws NotFoundException {
-        return bookService.getBookById(id);
+        Book book = bookService.getBookById(id);
+        return new Response("true", "Book Details " + id + " successfull", book);
     }
 
     @GetMapping("/movies")
-    @ApiOperation(value = "Get Movie Listing For a Given Limit", response = List.class, tags = "List Movies")
-    List<Movie> getMoviesByCount(@ApiParam("Maximum Listing of Movies, if max not provided: Default Value = 5 ")@Valid
+    @ApiOperation(value = "Get Movie Listing For a Given Limit", response = Response.class, tags = "List Movies")
+    Response getMoviesByCount(@ApiParam("Maximum Listing of Movies, if max not provided: Default Value = 5 ")@Valid
                                  @RequestParam(value = "max", required = false, defaultValue = "${default.movies.count}")
                                  @NumberFormat(style = NumberFormat.Style.NUMBER)
                                          Long movieCount) throws NotFoundException {
-        return movieService.getMoviesByCount(movieCount);
+        List<Movie> listMovie =  movieService.getMoviesByCount(movieCount);
+        return new Response("true", "Movie Listing", listMovie);
     }
 
     @GetMapping("/movies/{id}")
-    @ApiOperation(value = "Get Movie Details for a specific Movie Id", response = Movie.class, tags = "Movie Details")
-    Movie getMovieById(@Valid @PathVariable("id")
+    @ApiOperation(value = "Get Movie Details for a specific Movie Id", response = Response.class, tags = "Movie Details")
+    Response getMovieById(@Valid @PathVariable("id")
                        @NumberFormat(style = NumberFormat.Style.NUMBER)
                                Long id) throws NotFoundException {
-        return movieService.getMovieById(id);
+        Movie movie =  movieService.getMovieById(id);
+        return new Response("true", "Movie Details " + id + " successfull", movie);
     }
 
     @PatchMapping("/books/{id}/checkout")
