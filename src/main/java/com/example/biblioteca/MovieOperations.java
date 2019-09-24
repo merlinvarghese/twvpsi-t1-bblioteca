@@ -6,6 +6,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 
 import javax.persistence.*;
+import javax.validation.constraints.Pattern;
 import java.util.Objects;
 
 @Entity
@@ -47,19 +48,6 @@ class MovieOperations {
 
     void setType(String type) {
         this.type = type;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        MovieOperations that = (MovieOperations) o;
-        return id.equals(that.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
     }
 
     String getIssued_to() {

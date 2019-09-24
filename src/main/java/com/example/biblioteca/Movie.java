@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -26,6 +27,10 @@ public class Movie {
 
     @JsonProperty
     private final String rating;
+
+    public List<MovieOperations> getOperations() {
+        return operations;
+    }
 
     @JsonIgnore
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "movie")
@@ -51,7 +56,7 @@ public class Movie {
         this.year = year;
         this.director = director;
         this.rating = rating;
-        this.operations = null;
+        this.operations = new ArrayList<>();
     }
 
     @Override

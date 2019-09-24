@@ -11,7 +11,8 @@ public class MovieService {
     static final String MOVIE_CHECKOUT_FAIL = "That movie is not available.";
     static final String MOVIE_RETURN_SUCCESS = "Thank you for returning the movie.";
     static final String MOVIE_RETURN_FAIL = "That is not a valid movie to return.";
-    static final String MOVIE_RETURN_FAIL_FOR_INVALID_USER = "This is not valid user to return this book";
+    static final String MOVIE_RETURN_FAIL_FOR_INVALID_USER = "Invalid user";
+    public static final String INVALID_OPERATION = "Invalid Operation";
 
     @SuppressWarnings("unused")
     @Autowired
@@ -46,14 +47,18 @@ public class MovieService {
             return returnMovie(id);
         }
 
-        return new Messages();
+        Messages message = new Messages();
+        message.setMessage(INVALID_OPERATION);
+        return message;
     }
 
     private Messages returnMovie(Long movieId) throws NotFoundException {
         Long lastMovieOperationId = movieOperationsRepository.getLastOperationId(movieId);
         // No operation performed on Movie yet
         if (lastMovieOperationId == null) {
-            performReturn(movieId);
+            Messages message = new Messages();
+            message.setMessage(MOVIE_RETURN_FAIL);
+            return message;
         }
 
         MovieOperations lastMovieOperation = movieOperationsRepository.findById(lastMovieOperationId).get();
