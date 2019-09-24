@@ -44,7 +44,7 @@ class BibliotecaController {
 
     @GetMapping("/movies")
     @ApiOperation(value = "Get Movie Listing For a Given Limit", response = List.class, tags = "List Movies")
-    List<Movie> getMoviesByCount(@Valid
+    List<Movie> getMoviesByCount(@ApiParam("Maximum Listing of Movies, if max not provided: Default Value = 5 ")@Valid
                                  @RequestParam(value = "max", required = false, defaultValue = "${default.movies.count}")
                                  @NumberFormat(style = NumberFormat.Style.NUMBER)
                                          Long movieCount) throws NotFoundException {
@@ -76,6 +76,7 @@ class BibliotecaController {
     }
 
     @PostMapping("/movies/{id}/operations")
+    @ApiOperation(value = "Checkout or Return the Movie given MovieId", response = Movie.class, tags = "Checkout/Return Movie")
     Messages performMovieOperations(@Valid
                            @PathVariable("id")
                            @NumberFormat(style = NumberFormat.Style.NUMBER)
