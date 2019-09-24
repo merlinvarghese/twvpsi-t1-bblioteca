@@ -2,7 +2,10 @@ package com.example.biblioteca;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
 
 import javax.persistence.*;
 import java.util.List;
@@ -52,6 +55,9 @@ class Book {
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "id")
     private List<BookOperations> operations;
 
+
+    @JsonProperty
+    private String issued_to;
 
     @SuppressWarnings("unused")
     Book() {
@@ -109,7 +115,10 @@ class Book {
             }
         }
 
+
         //BookOperations bookOperations = new BookOperations(this, )
+
+
 
         return message;
     }
@@ -125,5 +134,24 @@ class Book {
         return id;
     }
 
+    private void updateIssuedToOnBook() {
+        String username = getUserNameFromSpringSecurity();
+        setIssued_to(username);
+    }
+
+    private String getUserNameFromSpringSecurity() {
+        String username = "";
+        try {
+            Object user = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            username = ((User) user).getUsername();
+        } catch (Exception e) {
+        }
+
+        return username;
+    }
+
+    void setIssued_to(String issued_to) {
+        this.issued_to = issued_to;
+    }
 
 }

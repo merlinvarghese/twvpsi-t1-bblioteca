@@ -25,7 +25,8 @@ dependencies {
 	compile group: 'io.springfox', name: 'springfox-swagger-ui', version: '2.7.0'
 
 	compile('org.springframework.boot:spring-boot-starter-web')
-
+	compile("org.springframework.boot:spring-boot-starter-security")
+	compile 'org.springframework.security:spring-security-test:4.0.1.RELEASE'
 	compile(group: 'org.postgresql', name: 'postgresql', version: '42.0.0')
 	compile 'org.flywaydb:flyway-core'
 	runtime 'com.h2database:h2'

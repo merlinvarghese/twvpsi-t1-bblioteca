@@ -79,6 +79,7 @@ class BibliotecaService {
         return movieRepository.findById(id).orElseThrow(() -> new NotFoundException("No Movie found"));
     }
 
+
 //    Messages checkOutMovie(Long id) throws NotFoundException {
 //        Messages message = new Messages();
 //        Movie movie = getMovieById(id);

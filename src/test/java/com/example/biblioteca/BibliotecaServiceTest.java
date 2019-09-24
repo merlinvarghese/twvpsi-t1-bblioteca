@@ -31,8 +31,10 @@ class BibliotecaServiceTest {
                 "1990",
                 "Vintage Books USA",
                 "AVAILABLE");
+
         Book savedBook = bookRepository.save(book);
         Book fetchedBook = bibliotecaService.getBookById(savedBook.getId());
+
         assertEquals(savedBook, fetchedBook);
     }
 
