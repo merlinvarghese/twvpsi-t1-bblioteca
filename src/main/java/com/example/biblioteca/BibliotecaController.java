@@ -35,11 +35,12 @@ class BibliotecaController {
     }
 
     @GetMapping("/books/{id}")
-    @ApiOperation(value = "Get Specific Book for a given Book Id", response = Book.class, tags = "Book Details")
-    Book getBookById(@Valid @PathVariable("id")
+    @ApiOperation(value = "Get Specific Book for a given Book Id", response = Response.class, tags = "Book Details")
+    Response getBookById(@Valid @PathVariable("id")
                      @NumberFormat(style = NumberFormat.Style.NUMBER) Long id)
             throws NotFoundException {
-        return bibliotecaService.getBookById(id);
+        Book book = bibliotecaService.getBookById(id);
+        return new Response("true", "Book Details " + id + " successfull", book);
     }
 
     @GetMapping("/movies")

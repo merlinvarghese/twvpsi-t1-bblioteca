@@ -55,8 +55,7 @@ class BibliotecaControllerTest {
             mockMvc.perform(get("/books/{id}", 1)
                     .accept(MediaType.APPLICATION_JSON))
                     .andExpect(status().isOk())
-                    .andExpect(content().json("{\"isbn\":\"375704965\",\"title\":\"A Judgement in Stone\"" +
-                            ", \"author\":\"Ruth Rendell\",\"published_year\":\"2000\", \"publisher\":\"Vintage Books USA\"}"));
+                    .andExpect(jsonPath("$.success").value("true"));
 
             verify(bibliotecaService).getBookById(1L);
         }
