@@ -69,6 +69,7 @@ class BibliotecaController {
     @ApiOperation(value = "Checkout the Book given the BookId", response = Messages.class, tags = "Checkout Book")
     Messages updateCheckoutStatus(@Valid @PathVariable("id")
                                   @NumberFormat(style = NumberFormat.Style.NUMBER)
+
                                           Long id) throws NotFoundException {
         return bookService.checkout(id);
     }
