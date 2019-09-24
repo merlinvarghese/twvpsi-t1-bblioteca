@@ -22,21 +22,22 @@ public class BookOperations {
 
     private final String status;
 
-     BookOperations(Long id, Book book, String issued_to, String status) {
-         this.id = id;
+     BookOperations(Book book, String issued_to, String status) {
+         this.id = null;
          this.book = book;
         this.issued_to = issued_to;
         this.status = status;
     }
 
-    BookOperations(Long id)
+    BookOperations()
     {
-        this.id = id;
+        this.id = null;
         this.book = null;
         this.status = null;
         this.issued_to = null;
 
     }
+
 
     public Long getId() {
         return id;
@@ -48,5 +49,8 @@ public class BookOperations {
 
     public String getStatus() {
         return status;
+    }
+
+    public boolean isDifferentUser() {
     }
 }

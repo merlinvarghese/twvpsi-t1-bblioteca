@@ -2,15 +2,13 @@ package com.example.biblioteca;
 
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 class BookTest {
     @Test
     void expectSuccessfulCheckoutForAvailableBook() {
         Book book = new Book(1L, "786863986", "A Monk Swimming", "Malachy McCourt",
                 "1998", "Hyperion", "AVAILABLE");
 
-        assertTrue(book.checkOut());
+        assertTrue(book.checkOut(currentBookOperation));
         assertEquals("CHECKEDOUT", book.getCheckout_status());
     }
 
@@ -19,7 +17,7 @@ class BookTest {
         Book book = new Book(1L, "786863986", "A Monk Swimming", "Malachy McCourt",
                 "1998", "Hyperion", "CHECKEDOUT");
 
-        assertFalse(book.checkOut());
+        assertFalse(book.checkOut(currentBookOperation));
     }
 
     @Test

@@ -2,7 +2,6 @@ package com.example.biblioteca;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
@@ -14,10 +13,10 @@ import java.util.Objects;
 @Entity
 class Book {
 
-    private  final String CHECKOUT_SUCCESS = "Thank you! Enjoy the book.";
-    private  final String CHECKOUT_FAILURE = "That book is not available.";
-    private  final String CHECKIN_SUCCESS = "Thank you for returning the book.";
-    private  final String CHECKIN_FAILURE = "That is not a valid book to return.";
+    private final String CHECKOUT_SUCCESS = "Thank you! Enjoy the book.";
+    private final String CHECKOUT_FAILURE = "That book is not available.";
+    private final String CHECKIN_SUCCESS = "Thank you for returning the book.";
+    private final String CHECKIN_FAILURE = "That is not a valid book to return.";
 
     @Autowired
     private BookRepository bookRepository;
@@ -52,12 +51,9 @@ class Book {
     private final String publisher;
 
     @JsonIgnore
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "id")
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "book")
     private List<BookOperations> operations;
 
-
-    @JsonProperty
-    private String issued_to;
 
     @SuppressWarnings("unused")
     Book() {
@@ -102,41 +98,42 @@ class Book {
         return Objects.hash(id);
     }
 
-    Messages checkOut() {
+    Messages checkOut(BookOperations currentBookOperation) {
         Messages message = new Messages();
         Long lastBookOperationId = bookOperationsRepository.getLastBookOperationId(this.id);
-        if(lastBookOperationId!=null)
-        {
+        if (lastBookOperationId != null) {
             BookOperations bookOperations = bookOperationsRepository.findById(lastBookOperationId).get();
-            if(bookOperations.getStatus().equals("CHECKEOUT"))
-            {
+            if (bookOperations.getStatus().equals("CHECKEOUT")) {
                 message.setMessage(CHECKOUT_FAILURE);
                 return message;
             }
         }
-
-
-        //BookOperations bookOperations = new BookOperations(this, )
-
-
-
+        BookOperations bookOperations = new BookOperations(this, getUserNameFromSpringSecurity(), "CHECKEDOUT");
+        this.operations.add(bookOperations);
+        message.setMessage(CHECKOUT_SUCCESS);
         return message;
     }
 
     Messages checkIn() {
-
-
-        return new Messages();
+        Messages message = new Messages();
+        Long lastBookOperationId = bookOperationsRepository.getLastBookOperationId(this.id);
+        if (lastBookOperationId != null) {
+            BookOperations bookOperations = bookOperationsRepository.findById(lastBookOperationId).get();
+            if (bookOperations.getStatus().equals("AVAILABLE")) {
+                message.setMessage(CHECKIN_FAILURE);
+                return message;
+            }
+        }
+        BookOperations bookOperations = new BookOperations(this, getUserNameFromSpringSecurity(), "AVAILABLE");
+        this.operations.add(bookOperations);
+        bookRepository.save(this);
+        message.setMessage(CHECKIN_SUCCESS);
+        return message;
     }
 
     @JsonIgnore
     Long getId() {
         return id;
-    }
-
-    private void updateIssuedToOnBook() {
-        String username = getUserNameFromSpringSecurity();
-        setIssued_to(username);
     }
 
     private String getUserNameFromSpringSecurity() {
@@ -150,8 +147,11 @@ class Book {
         return username;
     }
 
-    void setIssued_to(String issued_to) {
-        this.issued_to = issued_to;
+    public List<BookOperations> getOperations() {
+        return operations;
     }
 
+
+    public void returnMovie(BookOperations currentMovieOperation) {
+    }
 }

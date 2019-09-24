@@ -5,7 +5,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 class BibliotecaService {
@@ -43,7 +42,7 @@ class BibliotecaService {
     Messages checkOutBook(Long id) throws NotFoundException {
         Messages message = new Messages();
         Book book = getBookById(id);
-        Messages checkoutSuccess = book.checkOut();
+        Messages checkoutSuccess = book.checkOut(currentBookOperation);
 
         return message;
     }
